@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Architecture — Plateforme IA Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #EEF1F5;
+    --bg-2:      #E4E9F0;
+    --surface:   #FFFFFF;
+    --border:    #D7DEE7;
+    --border-2:  #C4CEDB;
+    --ink:       #0B1B33;
+    --ink-2:     #1F3354;
+    --muted:     #5A6B85;
+    --muted-2:   #8A96AC;
+    --primary:   #1E3A6B;
+    --primary-2: #2C5599;
+    --accent:    #2F6BD8;
+    --accent-2:  #6AA0F2;
+    --agent:     #16314E;
+    --agent-ink: #F1F5FB;
+    --loi25:     #0F766E;
+    --flow:      #1E3A6B;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-2); }
+  body {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .stage {
+    width: 1920px;
+    height: 1200px;
+    margin: 0 auto;
+    background:
+      radial-gradient(1200px 700px at 18% -10%, #F6F8FB 0%, transparent 60%),
+      radial-gradient(900px 600px at 100% 110%, #E1E8F2 0%, transparent 55%),
+      linear-gradient(180deg, #F2F5F9 0%, #E8EDF4 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 48px 64px 40px;
+  }
+
+  /* subtle grid */
+  .stage::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(11,27,51,0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(11,27,51,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    mask-image: radial-gradient(1200px 800px at 50% 50%, #000 60%, transparent 100%);
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .brand-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .brand-tag .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(47,107,216,0.15); }
+  .title {
+    font-size: 38px; line-height: 1.05;
+    font-weight: 800; letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .subtitle {
+    font-size: 16px; color: var(--muted);
+    margin-top: 8px;
+    max-width: 880px;
+    font-weight: 500;
+  }
+
+  .badges { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+    box-shadow: 0 1px 2px rgba(11,27,51,0.04);
+  }
+  .badge.loi25 { border-color: rgba(15,118,110,0.35); color: #0B5C55; background: #F1FBF8; }
+  .badge .shield { width: 14px; height: 14px; }
+  .badge .pulse { width: 8px; height: 8px; border-radius: 50%; background: #16A34A; box-shadow: 0 0 0 4px rgba(22,163,74,0.18); }
+
+  /* ---------- Layers ---------- */
+  .layers { display: grid; grid-template-columns: 132px 1fr; gap: 22px; position: relative; z-index: 2; }
+
+  .lyr-label {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-top: 14px;
+  }
+  .lyr-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted-2);
+    letter-spacing: 0.15em;
+  }
+  .lyr-name {
+    font-size: 13px; font-weight: 700;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+  }
+  .lyr-meta {
+    font-size: 11px; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+    margin-top: 6px;
+  }
+
+  .lyr {
+    position: relative;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(6px);
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 8px 24px rgba(11,27,51,0.04);
+  }
+  .lyr.dark {
+    background: linear-gradient(180deg, #14253F 0%, #0E1B30 100%);
+    border-color: #1F3354;
+    color: var(--agent-ink);
+    box-shadow: 0 12px 36px rgba(11,27,51,0.18);
+  }
+  .lyr-row { display: flex; gap: 14px; align-items: stretch; }
+
+  /* ---------- Generic card ---------- */
+  .card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 1px 2px rgba(11,27,51,0.04);
+    position: relative;
+  }
+  .card .head { display: flex; align-items: center; gap: 10px; }
+  .card .icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: #EEF3FA;
+    color: var(--primary);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .card .name { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -0.005em; }
+  .card .role { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .card .tag {
+    position: absolute; top: 10px; right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--muted-2);
+    letter-spacing: 0.06em;
+  }
+
+  /* Interface layer cards */
+  .iface-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 14px; }
+  .iface .card { padding: 16px 18px; }
+  .iface .card .role { font-size: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #EEF3FA;
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* Communication layer */
+  .comm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .comm .card .role { min-height: 32px; }
+  .arrow-h {
+    font-size: 11px; color: var(--muted-2);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---------- Agents layer ---------- */
+  .agents-wrap {
+    display: grid;
+    grid-template-columns: 1fr 252px;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+  .agent {
+    position: relative;
+    background: linear-gradient(180deg, #1B3052 0%, #122443 100%);
+    border: 1px solid #2A4574;
+    border-radius: 14px;
+    padding: 14px 14px 16px;
+    color: var(--agent-ink);
+    display: flex; flex-direction: column; gap: 10px;
+    overflow: hidden;
+  }
+  .agent::before {
+    content: "";
+    position: absolute; left: 0; right: 0; top: 0; height: 3px;
+    background: linear-gradient(90deg, #2F6BD8, #6AA0F2);
+    opacity: 0.85;
+  }
+  .agent .a-head { display: flex; align-items: center; gap: 10px; }
+  .agent .a-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: #8FB2E0;
+    letter-spacing: 0.14em;
+  }
+  .agent .a-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: rgba(47,107,216,0.18);
+    color: #9BC0F2;
+    display: grid; place-items: center;
+    border: 1px solid rgba(106,160,242,0.25);
+  }
+  .agent .a-name {
+    font-size: 14px; font-weight: 700; line-height: 1.15;
+    color: #F1F5FB;
+    letter-spacing: -0.005em;
+  }
+  .agent .a-role {
+    font-size: 11.5px; color: #B6C5DC;
+    line-height: 1.4;
+  }
+  .agent .a-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; }
+  .agent .a-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(106,160,242,0.10);
+    color: #9BC0F2;
+    border: 1px solid rgba(106,160,242,0.22);
+    font-weight: 500;
+  }
+
+  .api-pane {
+    background: rgba(255,255,255,0.04);
+    border: 1px dashed rgba(155,192,242,0.35);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    color: var(--agent-ink);
+  }
+  .api-pane .ttl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: #8FB2E0; letter-spacing: 0.14em;
+  }
+  .api-pane .api-card {
+    background: rgba(47,107,216,0.10);
+    border: 1px solid rgba(106,160,242,0.25);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .api-pane .api-card .a-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: rgba(106,160,242,0.18);
+    display: grid; place-items: center;
+    color: #9BC0F2;
+  }
+  .api-pane .api-card .nm { font-size: 13px; font-weight: 700; color: #F1F5FB; }
+  .api-pane .api-card .sb { font-size: 11px; color: #B6C5DC; }
+
+  .interbus {
+    font-size: 11px; color: #B6C5DC;
+    line-height: 1.45;
+    border-top: 1px solid rgba(155,192,242,0.18);
+    padding-top: 10px;
+  }
+  .interbus b { color: #F1F5FB; font-weight: 700; }
+
+  /* Data layer */
+  .data-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .data-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .data-card .head { display: flex; align-items: center; gap: 10px; }
+  .data-card .icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #EEF3FA; color: var(--primary);
+    display: grid; place-items: center;
+  }
+  .data-card .name { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+  .data-card .sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted-2); letter-spacing: 0.06em; }
+
+  .tables {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .tbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-2);
+    background: #F5F8FC;
+    border: 1px solid #E2E9F2;
+    border-radius: 6px;
+    padding: 6px 8px;
+    text-align: center;
+  }
+
+  .data-card .line {
+    font-size: 11.5px; color: var(--muted);
+    line-height: 1.4;
+  }
+  .data-card .line b { color: var(--ink-2); font-weight: 600; }
+
+  /* Integrations layer */
+  .int-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  /* ---------- Flow arrows / connectors ---------- */
+  .connectors {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Legend / Flow strip */
+  .footer {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .flow-strip {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: nowrap;
+  }
+  .flow-strip .ftl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--muted-2);
+    letter-spacing: 0.14em;
+    margin-right: 6px;
+  }
+  .step {
+    font-size: 11.5px;
+    padding: 6px 10px;
+    background: #F3F6FB;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink-2);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .step.agent-step { background: #14253F; border-color: #1F3354; color: #F1F5FB; }
+  .step.client-step { background: #EEF6F4; border-color: #C2DCD6; color: #0B5C55; }
+  .arrow {
+    color: var(--muted-2);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .legend {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px;
+    align-content: center;
+  }
+  .legend .ttl {
+    grid-column: 1 / -1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--muted-2);
+    letter-spacing: 0.14em;
+    margin-bottom: 4px;
+  }
+  .lg { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--ink-2); font-weight: 500; }
+  .lg .sw { width: 18px; height: 4px; border-radius: 2px; }
+  .lg .dot { width: 10px; height: 10px; border-radius: 3px; border: 1px solid var(--border); }
+
+  /* watermark / version */
+  .version {
+    position: absolute;
+    bottom: 16px; right: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted-2);
+    letter-spacing: 0.14em;
+  }
+
+  /* responsive scaling for browser preview */
+  .viewport {
+    width: 100vw; height: 100vh;
+    display: grid; place-items: center;
+    overflow: hidden;
+  }
+  .scaler { transform-origin: center center; }
+</style>
+</head>
+<body>
+  <div class="viewport">
+    <div class="scaler" id="scaler">
+      <div class="stage" id="stage">
+
+        <!-- HEADER -->
+        <header class="header">
+          <div>
+            <div class="brand-tag"><span class="dot"></span>Plateforme IA Business — PME de services · Québec</div>
+            <h1 class="title">Architecture d'une plateforme multi-agents IA<br/>pour l'automatisation administrative</h1>
+            <p class="subtitle">Six agents intelligents orchestrent le cycle complet — du lead entrant à la fidélisation — sur une infrastructure hébergée en région canadienne.</p>
+          </div>
+          <div class="badges">
+            <span class="badge loi25">
+              <svg class="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              Conforme Loi 25 · Hébergement Canada
+            </span>
+            <span class="badge"><span class="pulse"></span>Exécution évènementielle 24/7</span>
+          </div>
+        </header>
+
+        <!-- LAYERS -->
+        <div class="layers">
+
+          <!-- ============ LAYER 1: INTERFACE ============ -->
+          <div class="lyr-label">
+            <div class="lyr-num">COUCHE 01</div>
+            <div class="lyr-name">Interfaces utilisateur</div>
+            <div class="lyr-meta">client · propriétaire</div>
+          </div>
+          <div class="lyr iface">
+            <div class="iface-grid">
+              <!-- Web client -->
+              <div class="card">
+                <span class="tag">Public</span>
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/><path d="M8 14h6"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Site web client</div>
+                    <div class="role">Formulaire de demande de soumission</div>
+                  </div>
+                </div>
+                <div class="chips">
+                  <span class="chip">Saisie guidée</span>
+                  <span class="chip">Captcha</span>
+                  <span class="chip">Multilingue</span>
+                </div>
+              </div>
+              <!-- Dashboard -->
+              <div class="card">
+                <span class="tag">React · Vite</span>
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Dashboard propriétaire</div>
+                    <div class="role">Pilotage en temps réel de l'activité</div>
+                  </div>
+                </div>
+                <div class="chips">
+                  <span class="chip">Pipeline leads</span>
+                  <span class="chip">Calendrier</span>
+                  <span class="chip">Rapports</span>
+                  <span class="chip">Communications</span>
+                  <span class="chip">Facturation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ LAYER 2: COMMUNICATION ============ -->
+          <div class="lyr-label">
+            <div class="lyr-num">COUCHE 02</div>
+            <div class="lyr-name">Communication entrante & sortante</div>
+            <div class="lyr-meta">bidirectionnelle</div>
+          </div>
+          <div class="lyr comm">
+            <div class="comm-grid">
+              <div class="card">
+                <span class="tag">↔︎ Bidirectionnel</span>
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Gmail API</div>
+                    <div class="role">Courriels entrants & sortants · pièces jointes PDF</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <span class="tag">↔︎ Bidirectionnel</span>
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Twilio · SMS</div>
+                    <div class="role">Numéro canadien · confirmations & rappels</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <span class="tag">→ Entrant</span>
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="m5 9 7-7 7 7"/><path d="M5 21h14"/><path d="M5 15h14"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Webhook formulaire web</div>
+                    <div class="role">Réception des demandes site client · payload signé</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ LAYER 3: AGENTS / INTELLIGENCE ============ -->
+          <div class="lyr-label">
+            <div class="lyr-num">COUCHE 03</div>
+            <div class="lyr-name">Intelligence — Six agents IA</div>
+            <div class="lyr-meta">cœur du système</div>
+          </div>
+          <div class="lyr dark">
+            <div class="agents-wrap">
+              <div class="agents-grid">
+
+                <div class="agent">
+                  <div class="a-head">
+                    <div class="a-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="m16.24 16.24 2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="m16.24 7.76 2.83-2.83"/></svg>
+                    </div>
+                    <div class="a-num">AGENT 01</div>
+                  </div>
+                  <div class="a-name">Coordonnateur</div>
+                  <div class="a-role">Reçoit et classifie chaque communication entrante.</div>
+                  <div class="a-tags"><span class="a-tag">routage</span><span class="a-tag">triage</span></div>
+                </div>
+
+                <div class="agent">
+                  <div class="a-head">
+                    <div class="a-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-4.3-4.3"/><circle cx="11" cy="11" r="7"/><path d="M8 11h6"/><path d="M11 8v6"/></svg>
+                    </div>
+                    <div class="a-num">AGENT 02</div>
+                  </div>
+                  <div class="a-name">Qualificateur</div>
+                  <div class="a-role">Enrichit le profil et attribue un score chaud / tiède / froid.</div>
+                  <div class="a-tags"><span class="a-tag">scoring</span><span class="a-tag">enrichissement</span></div>
+                </div>
+
+                <div class="agent">
+                  <div class="a-head">
+                    <div class="a-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>
+                    </div>
+                    <div class="a-num">AGENT 03</div>
+                  </div>
+                  <div class="a-name">Estimateur</div>
+                  <div class="a-role">Calcule la soumission, produit le PDF et l'envoi accompagné.</div>
+                  <div class="a-tags"><span class="a-tag">soumission</span><span class="a-tag">PDF</span></div>
+                </div>
+
+                <div class="agent">
+                  <div class="a-head">
+                    <div class="a-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 11h18"/><circle cx="12" cy="16" r="1.5"/></svg>
+                    </div>
+                    <div class="a-num">AGENT 04</div>
+                  </div>
+                  <div class="a-name">Planificateur</div>
+                  <div class="a-role">Propose les plages, confirme le RDV et programme les rappels.</div>
+                  <div class="a-tags"><span class="a-tag">RDV</span><span class="a-tag">rappels</span></div>
+                </div>
+
+                <div class="agent">
+                  <div class="a-head">
+                    <div class="a-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 3v6h-6"/></svg>
+                    </div>
+                    <div class="a-num">AGENT 05</div>
+                  </div>
+                  <div class="a-name">Suivi</div>
+                  <div class="a-role">Relances, avis Google post-service et rappels saisonniers.</div>
+                  <div class="a-tags"><span class="a-tag">relance</span><span class="a-tag">avis</span><span class="a-tag">fidélisation</span></div>
+                </div>
+
+                <div class="agent">
+                  <div class="a-head">
+                    <div class="a-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M5 7v14h14V7"/><path d="M9 11h6"/><path d="M9 15h6"/></svg>
+                    </div>
+                    <div class="a-num">AGENT 06</div>
+                  </div>
+                  <div class="a-name">Gestionnaire admin</div>
+                  <div class="a-role">Factures, paiements, rapports hebdo et registre Loi 25.</div>
+                  <div class="a-tags"><span class="a-tag">facturation</span><span class="a-tag">conformité</span></div>
+                </div>
+
+              </div>
+
+              <div class="api-pane">
+                <div class="ttl">MODÈLES D'INFÉRENCE</div>
+                <div class="api-card">
+                  <div class="a-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 7l8 5 8-5-8-5z"/><path d="m4 12 8 5 8-5"/><path d="m4 17 8 5 8-5"/></svg>
+                  </div>
+                  <div>
+                    <div class="nm">API Claude</div>
+                    <div class="sb">Haiku · tâches rapides &nbsp;·&nbsp; Sonnet · raisonnement</div>
+                  </div>
+                </div>
+                <div class="interbus">
+                  <b>Bus inter-agents</b> — les six agents s'échangent l'état via la base de données : événements, file d'attente et journal partagé.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ LAYER 4: DATA & ORCHESTRATION ============ -->
+          <div class="lyr-label">
+            <div class="lyr-num">COUCHE 04</div>
+            <div class="lyr-name">Données & orchestration</div>
+            <div class="lyr-meta">région canadienne</div>
+          </div>
+          <div class="lyr">
+            <div class="data-grid">
+
+              <div class="data-card">
+                <div class="head">
+                  <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 11v6c0 1.7 4 3 9 3s9-1.3 9-3v-6"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Supabase Postgres</div>
+                    <div class="sub">RÉGION CA · CHIFFRÉ AU REPOS</div>
+                  </div>
+                </div>
+                <div class="tables">
+                  <div class="tbl">clients</div>
+                  <div class="tbl">soumissions</div>
+                  <div class="tbl">rendez-vous</div>
+                  <div class="tbl">services</div>
+                  <div class="tbl">factures</div>
+                  <div class="tbl">communications</div>
+                  <div class="tbl">rappels</div>
+                  <div class="tbl">journal_loi25</div>
+                </div>
+              </div>
+
+              <div class="data-card">
+                <div class="head">
+                  <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Triggers Postgres</div>
+                    <div class="sub">FLUX ÉVÈNEMENTIELS</div>
+                  </div>
+                </div>
+                <div class="line">Déclenchent l'agent suivant à chaque changement d'état d'un enregistrement (insertion, transition de statut, signature).</div>
+              </div>
+
+              <div class="data-card">
+                <div class="head">
+                  <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">pg_cron</div>
+                    <div class="sub">TÂCHES PLANIFIÉES</div>
+                  </div>
+                </div>
+                <div class="line">Relances de soumissions, rappels saisonniers (2–3 ans) et rapports hebdomadaires automatiques.</div>
+              </div>
+
+              <div class="data-card">
+                <div class="head">
+                  <div class="icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Storage + Realtime</div>
+                    <div class="sub">PDF · NOTIFICATIONS LIVE</div>
+                  </div>
+                </div>
+                <div class="line">Stockage des soumissions et factures PDF · diffusion temps réel au dashboard.</div>
+              </div>
+
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:12px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="m5 9 7-7 7 7"/><path d="m5 15 7 7 7-7"/></svg>
+              SUPABASE EDGE FUNCTIONS — runtime des six agents · invocations signées · journalisation immuable
+            </div>
+          </div>
+
+          <!-- ============ LAYER 5: EXTERNAL INTEGRATIONS ============ -->
+          <div class="lyr-label">
+            <div class="lyr-num">COUCHE 05</div>
+            <div class="lyr-name">Intégrations externes</div>
+            <div class="lyr-meta">services tiers</div>
+          </div>
+          <div class="lyr">
+            <div class="int-grid">
+              <div class="card">
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 11h18"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Google Calendar API</div>
+                    <div class="role">Synchronisation bidirectionnelle des rendez-vous & disponibilités</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Stripe</div>
+                    <div class="role">Paiements en ligne · webhooks de confirmation et de relance</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="head">
+                  <div class="icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+                  </div>
+                  <div>
+                    <div class="name">Générateur PDF</div>
+                    <div class="role">Service embarqué dans les Edge Functions · soumissions & factures</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- FOOTER FLOW STRIP -->
+        <div class="footer">
+          <div class="flow-strip">
+            <span class="ftl">FLUX PRINCIPAL</span>
+            <span class="step client-step">Lead entrant</span>
+            <span class="arrow">→</span>
+            <span class="step agent-step">Coordonnateur</span>
+            <span class="arrow">→</span>
+            <span class="step agent-step">Qualificateur</span>
+            <span class="arrow">→</span>
+            <span class="step agent-step">Estimateur</span>
+            <span class="arrow">→</span>
+            <span class="step client-step">Client (courriel · SMS)</span>
+            <span class="arrow">→</span>
+            <span class="step agent-step">Planificateur</span>
+            <span class="arrow">→</span>
+            <span class="step client-step">Service exécuté</span>
+            <span class="arrow">→</span>
+            <span class="step agent-step">Gestionnaire admin</span>
+            <span class="arrow">→</span>
+            <span class="step agent-step">Suivi · fidélisation 2–3 ans</span>
+          </div>
+          <div class="legend">
+            <div class="ttl">LÉGENDE</div>
+            <div class="lg"><div class="dot" style="background:#14253F; border-color:#1F3354;"></div>Agent IA</div>
+            <div class="lg"><div class="dot" style="background:#FFFFFF;"></div>Composant logiciel</div>
+            <div class="lg"><div class="sw" style="background:linear-gradient(90deg,#2F6BD8,#6AA0F2);"></div>Flux principal</div>
+            <div class="lg"><div class="sw" style="background:#0F766E;"></div>Périmètre Loi 25</div>
+          </div>
+        </div>
+
+        <div class="version">ARCH · v1.0 · français (QC)</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Auto-scale the 1920×1200 stage to fit the viewport.
+  (function () {
+    const stage = document.getElementById('stage');
+    const scaler = document.getElementById('scaler');
+    function fit() {
+      const sw = stage.offsetWidth;
+      const sh = stage.offsetHeight;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scale = Math.min(vw / sw, vh / sh);
+      scaler.style.transform = 'scale(' + scale + ')';
+    }
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+</script>
+</body>
+</html>
