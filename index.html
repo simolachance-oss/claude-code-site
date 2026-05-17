@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Schémas d'architecture · IA Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ECE7DE; min-height: 100vh; }
+  body {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    color: #1A1F2E;
+    display: grid; place-items: center;
+    padding: 40px 20px;
+  }
+  .wrap { max-width: 1080px; width: 100%; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.18em;
+    color: #6B6F7C; text-transform: uppercase; margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .tag .dot { width: 8px; height: 8px; border-radius: 50%; background: #D97A3B; box-shadow: 0 0 0 4px rgba(217,122,59,0.18); }
+  h1 { font-size: 38px; line-height: 1.05; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 10px; }
+  p.sub { font-size: 16px; color: #5A6B85; margin: 0 0 28px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    background: #fff; border: 1px solid #DDD6C8; border-radius: 18px;
+    padding: 28px; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    box-shadow: 0 1px 2px rgba(26,31,46,0.04);
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(26,31,46,0.10); border-color: #C9C0AE; }
+  .card .num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #9A9CA8; letter-spacing: 0.14em; }
+  .card h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin: 6px 0 8px; line-height: 1.15; }
+  .card p { font-size: 13.5px; color: #5A6B85; margin: 0 0 18px; line-height: 1.5; }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font-size: 11px; padding: 4px 10px; border-radius: 999px; background: #F3F0E9; color: #2C3447; font-weight: 600; border: 1px solid #DDD6C8; }
+  .chip.b { background: #EEF3FA; color: #1E3A6B; border-color: #D5E1F2; }
+  .chip.o { background: #FBF0E6; color: #8A461E; border-color: #E8C9AC; }
+  .chip.g { background: #EEF7F4; color: #1C5F53; border-color: #B7D5CB; }
+  .preview {
+    border-radius: 12px; overflow: hidden; border: 1px solid #DDD6C8;
+    height: 140px; margin-top: 16px; background: linear-gradient(135deg, #F5F1EA, #ECE7DE);
+    display: grid; place-items: center; color: #9A9CA8;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="tag"><span class="dot"></span>Schémas d'architecture · Présentation commerciale</div>
+    <h1>Deux schémas, deux plateformes IA</h1>
+    <p class="sub">Architectures multi-agents pour les PME québécoises — chacune en couches horizontales, prête pour capture image et intégration en présentation.</p>
+
+    <div class="grid">
+      <a class="card" href="Architecture IA Business.html">
+        <div class="num">SCHÉMA 01</div>
+        <h2>IA Business — Cycle administratif</h2>
+        <p>PME de services : qualification de leads, soumissions, rendez-vous, suivis, facturation et fidélisation. Six agents IA et conformité Loi 25.</p>
+        <div class="meta">
+          <span class="chip b">6 agents</span>
+          <span class="chip">Supabase</span>
+          <span class="chip">Edge Functions</span>
+          <span class="chip g">Loi 25</span>
+        </div>
+        <div class="preview">→ OUVRIR LE SCHÉMA</div>
+      </a>
+
+      <a class="card" href="Architecture IA Marketing.html">
+        <div class="num">SCHÉMA 02</div>
+        <h2>IA Marketing — Contenu & distribution</h2>
+        <p>Veille concurrentielle, production de contenu, création visuelle, distribution multi-canaux et analytics. Sept agents IA et validation humaine.</p>
+        <div class="meta">
+          <span class="chip o">7 agents</span>
+          <span class="chip">n8n</span>
+          <span class="chip">Airtable + Slack</span>
+          <span class="chip g">Human-in-the-loop</span>
+        </div>
+        <div class="preview">→ OUVRIR LE SCHÉMA</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
