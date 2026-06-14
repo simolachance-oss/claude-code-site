@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leads — Métiers Manuels // Prospection SMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Archivo+Black&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f0e;
+    --bg-2: #161816;
+    --bg-3: #1f2220;
+    --line: #2c2f2c;
+    --line-2: #3a3e3a;
+    --ink: #e8e6df;
+    --ink-dim: #8a8a82;
+    --ink-faded: #5a5a55;
+    --hi: #ff5b1f;
+    --hi-soft: #ff8a4b;
+    --safety: #ffc845;
+    --ok: #5fbf6f;
+    --grid: rgba(255,255,255,0.025);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  /* ============ HEADER ============ */
+  .header {
+    border: 1px solid var(--line-2);
+    background: var(--bg-2);
+    padding: 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--hi) 0, var(--hi) 12px,
+      var(--bg) 12px, var(--bg) 24px
+    );
+  }
+
+  .header-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+    margin-top: 12px;
+  }
+
+  .stamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .stamp .dot { color: var(--hi); }
+
+  h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  h1 .accent {
+    color: var(--hi);
+    font-style: italic;
+  }
+
+  .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-dim);
+    max-width: 520px;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  /* ============ STATS BAR ============ */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--line-2);
+    border-top: none;
+    background: var(--bg-2);
+    margin-bottom: 32px;
+  }
+
+  .stat {
+    padding: 24px;
+    border-right: 1px solid var(--line-2);
+    position: relative;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .stat-value.hi { color: var(--hi); }
+  .stat-value.ok { color: var(--ok); }
+
+  .stat-meta {
+    font-size: 11px;
+    color: var(--ink-dim);
+    margin-top: 4px;
+  }
+
+  /* ============ CATEGORY CARDS ============ */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 16px;
+    padding-left: 4px;
+    border-left: 3px solid var(--hi);
+    padding: 4px 0 4px 12px;
+  }
+
+  .cats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0;
+    border: 1px solid var(--line-2);
+    margin-bottom: 32px;
+  }
+
+  .cat-card {
+    background: var(--bg-2);
+    border: none;
+    border-right: 1px solid var(--line-2);
+    border-bottom: 1px solid var(--line-2);
+    padding: 24px 20px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: inherit;
+    transition: background 0.15s ease, color 0.15s ease;
+    position: relative;
+  }
+
+  .cat-card:hover {
+    background: var(--bg-3);
+    color: var(--hi);
+  }
+
+  .cat-card.active {
+    background: var(--hi);
+    color: var(--bg);
+  }
+
+  .cat-card.active .cat-count { color: var(--bg); }
+
+  .cat-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    font-family: 'Archivo Black', sans-serif;
+  }
+
+  .cat-name {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    min-height: 32px;
+  }
+
+  .cat-count {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 32px;
+    color: var(--hi);
+    margin-top: 8px;
+    line-height: 1;
+  }
+
+  /* ============ CONTROLS ============ */
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: stretch;
+  }
+
+  .search-wrap {
+    position: relative;
+    display: flex;
+    border: 1px solid var(--line-2);
+    background: var(--bg-2);
+  }
+
+  .search-wrap::before {
+    content: '⌕';
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    color: var(--hi);
+    font-size: 18px;
+    border-right: 1px solid var(--line-2);
+  }
+
+  .search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .search-input::placeholder { color: var(--ink-faded); }
+
+  .filter-btn, .clear-btn {
+    background: var(--bg-2);
+    border: 1px solid var(--line-2);
+    color: var(--ink);
+    padding: 0 24px;
+    font-family: inherit;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .filter-btn:hover, .clear-btn:hover {
+    background: var(--hi);
+    color: var(--bg);
+    border-color: var(--hi);
+  }
+
+  .clear-btn { background: var(--bg-2); }
+
+  .results-meta {
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .results-meta .num {
+    color: var(--hi);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 18px;
+    margin-right: 6px;
+  }
+
+  /* ============ TABLE ============ */
+  .table-wrap {
+    border: 1px solid var(--line-2);
+    background: var(--bg-2);
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead {
+    background: var(--bg-3);
+    border-bottom: 1px solid var(--line-2);
+  }
+
+  thead th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+    font-weight: 500;
+    white-space: nowrap;
+    border-right: 1px solid var(--line);
+  }
+
+  thead th:last-child { border-right: none; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--line);
+    transition: background 0.1s ease;
+  }
+
+  tbody tr:hover {
+    background: var(--bg-3);
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody td {
+    padding: 12px 16px;
+    border-right: 1px solid var(--line);
+    vertical-align: middle;
+  }
+
+  tbody td:last-child { border-right: none; }
+
+  .row-num {
+    color: var(--ink-faded);
+    font-size: 11px;
+    width: 60px;
+  }
+
+  .company-name {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .website-link {
+    color: var(--hi);
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  .website-link:hover { text-decoration: underline; }
+
+  .no-website { color: var(--ink-faded); font-size: 12px; font-style: italic; }
+
+  .cat-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    background: var(--bg);
+    border: 1px solid var(--line-2);
+    color: var(--ink-dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 2px 4px 2px 0;
+    white-space: nowrap;
+  }
+
+  .conf {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+
+  .conf-Élevée {
+    background: var(--ok);
+    color: var(--bg);
+  }
+
+  .conf-Moyenne {
+    background: var(--safety);
+    color: var(--bg);
+  }
+
+  .kw-list {
+    color: var(--ink-faded);
+    font-size: 11px;
+  }
+
+  /* ============ EMPTY STATE ============ */
+  .empty {
+    padding: 80px 32px;
+    text-align: center;
+    color: var(--ink-dim);
+  }
+
+  .empty-icon {
+    font-size: 64px;
+    color: var(--ink-faded);
+    margin-bottom: 16px;
+  }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    margin-top: 48px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-faded);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ============ ANIMATIONS ============ */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    body { padding: 16px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat { border-right: none; border-bottom: 1px solid var(--line-2); }
+    .stat:nth-child(odd) { border-right: 1px solid var(--line-2); }
+    .controls { grid-template-columns: 1fr; }
+    .header { padding: 24px; }
+    h1 { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ============ HEADER ============ -->
+  <header class="header">
+    <div class="stamp"><span class="dot">●</span> CLASSIFICATION SECTORIELLE / RÉF. PROSPECTION-SMS / 28-04-2026</div>
+    <div class="header-grid">
+      <div>
+        <h1>Métiers <span class="accent">manuels</span></h1>
+        <p class="subtitle">
+          Filtrage automatisé de la base Airtable « Prospection SMS » par mot-clé sectoriel.
+          Identification des entreprises de construction, toiture, plomberie, paysagement, soudure et autres métiers à forte composante manuelle.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ STATS ============ -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Total identifié</div>
+      <div class="stat-value hi">530</div>
+      <div class="stat-meta">sur 4 772 leads (11 %)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Confiance élevée</div>
+      <div class="stat-value ok">379</div>
+      <div class="stat-meta">mots-clés non ambigus</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Confiance moyenne</div>
+      <div class="stat-value">151</div>
+      <div class="stat-meta">à reviewer manuellement</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Avec site web</div>
+      <div class="stat-value">518</div>
+      <div class="stat-meta">97 % couverture</div>
+    </div>
+  </div>
+
+  <!-- ============ CATEGORIES ============ -->
+  <div class="section-label">Filtrer par catégorie</div>
+  <div class="cats-grid" id="catsGrid">
+    
+    <button class="cat-card" data-cat="Mécanique/Soudure/Fabrication">
+      <div class="cat-icon">⚙</div>
+      <div class="cat-name">Mécanique/Soudure/Fabrication</div>
+      <div class="cat-count">115</div>
+    </button>
+    <button class="cat-card" data-cat="Construction">
+      <div class="cat-icon">▣</div>
+      <div class="cat-name">Construction</div>
+      <div class="cat-count">114</div>
+    </button>
+    <button class="cat-card" data-cat="Plomberie/Électricité/CVAC">
+      <div class="cat-icon">⌇</div>
+      <div class="cat-name">Plomberie/Électricité/CVAC</div>
+      <div class="cat-count">87</div>
+    </button>
+    <button class="cat-card" data-cat="Extérieur/Bâtiment">
+      <div class="cat-icon">▤</div>
+      <div class="cat-name">Extérieur/Bâtiment</div>
+      <div class="cat-count">68</div>
+    </button>
+    <button class="cat-card" data-cat="Métiers spécialisés">
+      <div class="cat-icon">✦</div>
+      <div class="cat-name">Métiers spécialisés</div>
+      <div class="cat-count">59</div>
+    </button>
+    <button class="cat-card" data-cat="Toiture">
+      <div class="cat-icon">△</div>
+      <div class="cat-name">Toiture</div>
+      <div class="cat-count">43</div>
+    </button>
+    <button class="cat-card" data-cat="Services manuels/Entretien">
+      <div class="cat-icon">✕</div>
+      <div class="cat-name">Services manuels/Entretien</div>
+      <div class="cat-count">36</div>
+    </button>
+    <button class="cat-card" data-cat="Paysagement">
+      <div class="cat-icon">❋</div>
+      <div class="cat-name">Paysagement</div>
+      <div class="cat-count">17</div>
+    </button>
+  </div>
+
+  <!-- ============ SEARCH ============ -->
+  <div class="section-label">Recherche & résultats</div>
+  <div class="controls">
+    <div class="search-wrap">
+      <input type="text" class="search-input" id="searchInput" placeholder="Rechercher par nom d'entreprise, mot-clé, site web…">
+    </div>
+    <button class="filter-btn" id="confFilter" data-state="all">Toutes confiances</button>
+    <button class="clear-btn" id="clearBtn">Reset filtres</button>
+  </div>
+
+  <div class="results-meta">
+    <div><span class="num" id="resultCount">0</span>résultats affichés</div>
+    <div id="activeFilters" style="color:var(--ink-faded);"></div>
+  </div>
+
+  <!-- ============ TABLE ============ -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Entreprise</th>
+          <th>Site web</th>
+          <th>Catégorie(s)</th>
+          <th>Confiance</th>
+          <th>Mots-clés détectés</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div id="empty" class="empty" style="display:none;">
+      <div class="empty-icon">∅</div>
+      <div>Aucun résultat ne correspond à ces critères.</div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Généré par Claude · Source : Airtable « Prospection SMS » · 28 avril 2026
+  </footer>
+</div>
+
+<script>
+  const LEADS = [{"id": "rec01D9i22vaKwNB9", "name": "Structures Metropolitaines (SMI) Inc", "website": "https://bwalk.com", "categories": ["Construction"], "matched_keywords": ["structures(weak)"], "confidence": "Moyenne"}, {"id": "rec04gJHspctbRsxq", "name": "Couverture Toiture Atlas Plus", "website": "", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "rec05ttdsIqISzfeb", "name": "Extermination Tremblay Lemieux - Jonquière", "website": "https://tremblaylemieux.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["extermination(STRONG)"], "confidence": "Élevée"}, {"id": "rec0EQRdN68zNCzu0", "name": "Rimouski Remorquage Inc", "website": "https://rimouskiremorquage.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "rec0GcVsRpKhpuup7", "name": "Industries SF inc.", "website": "https://industriessf.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "rec0HALUU1SApAXko", "name": "Devotek Construction", "website": "https://devotek.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec0KTInxKxzr35Hi", "name": "Cheminée Côte-de-Beaupré", "website": "https://chemineecotedebeaupre.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["cheminee(STRONG)"], "confidence": "Élevée"}, {"id": "rec0Lb9X8E5I43DOs", "name": "Planchers Exclusifs P L Inc", "website": "https://planchersalacarte.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["planchers(STRONG)"], "confidence": "Élevée"}, {"id": "rec0U7XzMMs2LP9Q8", "name": "Cossette Toitures & Rénovations", "website": "https://toiturescossette.ca", "categories": ["Construction", "Toiture"], "matched_keywords": ["renovations(STRONG)", "toitures(STRONG)"], "confidence": "Élevée"}, {"id": "rec0VVDKBFS63ydBr", "name": "Decoupage Industriel Fauteux", "website": "https://decoupagefauteux.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["decoupage industriel(STRONG)"], "confidence": "Élevée"}, {"id": "rec0W4FpTJkvSES9d", "name": "Genesis Flooring", "website": "https://genesisflooring.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["flooring(STRONG)"], "confidence": "Élevée"}, {"id": "rec0jcVPvqF98PqSY", "name": "Soudure Bess Design", "website": "https://soudurebessdesign.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "rec0pHvXmLUzrjSqw", "name": "Lavage de Vitres National Inc", "website": "https://lavagedevitresnational.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["lavage(weak)"], "confidence": "Moyenne"}, {"id": "rec15r0lYBG7ugrun", "name": "Paysagiste GEB", "website": "https://paysagistegeb.com", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "rec18E4HB9jk48YKc", "name": "Peinture Rive-Sud", "website": "https://peinturerivesud.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["peinture(STRONG)"], "confidence": "Élevée"}, {"id": "rec18adM8Kcqx1IQc", "name": "Charpenterie L'Ete Indien", "website": "https://charpenterieeteindien.com", "categories": ["Construction"], "matched_keywords": ["charpenterie(STRONG)"], "confidence": "Élevée"}, {"id": "rec1aO2zGVIdpzMYL", "name": "Airpura Industries Inc", "website": "https://airpura.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "rec1jbgeu0N8xKet6", "name": "Garage A. Lemieux", "website": "https://garagemecaniquelaval.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "rec1jth8LmdAZpJ7b", "name": "Isolation Trifluvienne Inc", "website": "https://isolationtrifluvienne.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "rec1mJi5qQTSRtQd5", "name": "Planchers Mascouche", "website": "https://planchersmascouche.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["planchers(STRONG)"], "confidence": "Élevée"}, {"id": "rec1sxTb7h4eI6B1m", "name": "Industries Brassard", "website": "https://industriesbrassard.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "rec26hDtqK5CIm6DK", "name": "Plomberie Eau Goulet Inc.", "website": "https://plomberieeaugoulet.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "rec27w0MpZOwOOuEC", "name": "Garage Minville Inc", "website": "https://kubotamontmagny.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "rec2BwqkpLG9gnfhN", "name": "AR Coupe Industrielle", "website": "https://coupeindustrielle.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industrielle(weak)"], "confidence": "Moyenne"}, {"id": "rec2LeOkNp5Vf4BRZ", "name": "Structure Avantage", "website": "https://structureavantage.com", "categories": ["Construction"], "matched_keywords": ["structure(weak)"], "confidence": "Moyenne"}, {"id": "rec2MeGLTijJjOH5V", "name": "Plomberie Eclips", "website": "https://plomberieeclips.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "rec2UpVhGxe7Xe76K", "name": "Peinture Robert Dupont", "website": "https://peinturerobertdupont.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["peinture(STRONG)"], "confidence": "Élevée"}, {"id": "rec2ZemhrM6FiteqS", "name": "Construction Desjardins Développement inc.", "website": "https://constructiondesjardins.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec2Zzx8AnwlVHyDF", "name": "Demenagement Maxi Plus Inc.", "website": "https://demenagementmaxi.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "rec2b5P9F3OdTj9ud", "name": "AG Mini-Excavation", "website": "https://excavationalexandregoulet.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "rec2fvKqgtPUj4WiS", "name": "Maçonnerie LMR Inc", "website": "https://maconnerielmr.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "rec2hRzzcFZoOzfLG", "name": "LAH - Portes et accessoires", "website": "https://lahportesmdf.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["portes(weak)"], "confidence": "Moyenne"}, {"id": "rec2ksaWb9lAQkOPf", "name": "Paysagiste 4 Saisons", "website": "https://paysagiste4saisons.ca", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "rec2p7oCfOjoUCTtM", "name": "Toitures Ancestrales Patrick Fraser", "website": "https://www.toituresancestrales.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "rec2uIT5TmjsgAd7A", "name": "Solution Mécanique Diesel inc", "website": "https://mecanique-diesel.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["mecanique(weak)"], "confidence": "Moyenne"}, {"id": "rec2vTeenUgwBGoGY", "name": "Déménagement Maxi Plus Inc.", "website": "https://demenagementmaxi.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "rec2zDbadB3F2aCW0", "name": "Steve Lampron Électrique", "website": "https://stevelampronelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "rec30PK5yTjZoDODr", "name": "cOUVRE-PLANCHER ÉLITE", "website": "https://couvreplancherelite.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["plancher(STRONG)"], "confidence": "Élevée"}, {"id": "rec3JavVfPQTOPv7B", "name": "Plomberie Maurice Bolduc & Fils Inc", "website": "https://plomberiemauricebolduc.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "rec3bYjSF2gj2RKmK", "name": "Construction Benoit Moreau Inc", "website": "https://constructionbenoitmoreau.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec3c5VD4veNqW5S5", "name": "Canleaf-Roofing", "website": "", "categories": ["Toiture"], "matched_keywords": ["roofing(STRONG)"], "confidence": "Élevée"}, {"id": "rec3nQXglX0XmihBN", "name": "NSL Toiture à vie inc.", "website": "https://nsltoitureavie.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "rec3qLNn07Skwlkpl", "name": "Pro-Fil Design | Couvre-Plancher & Décoration", "website": "https://profildesign.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["plancher(STRONG)"], "confidence": "Élevée"}, {"id": "rec3tpcjEhupcvPHs", "name": "Roxboro Excavation Inc.", "website": "https://roxboro.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "rec4C0uKZkGuj2gcD", "name": "Ébénisterie Giroux et Fils Inc", "website": "https://egfi.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "rec4CzANHAmiXI6MA", "name": "Planit Construction", "website": "https://www.planitconstruction.com/", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec4PdaLMeIDiRFDC", "name": "Nettoyage Uno", "website": "https://nettoyageuno.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["nettoyage(weak)"], "confidence": "Moyenne"}, {"id": "rec4Q0IRl7KYoWdE3", "name": "Vitrerie de la Vallée", "website": "https://vitreriedelavallee.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "rec4dAAwNlzZdKrql", "name": "Atelier D'Usinage Gagné Inc", "website": "https://gagnemachineshop.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "rec4gB2jyFjBSM8ns", "name": "Pose Fenêtre Expert", "website": "", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["fenetre(weak)"], "confidence": "Moyenne"}, {"id": "rec4kWbsVfNBuT70a", "name": "Plombier Beauport", "website": "https://plombierbeauport.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "rec4zOsFycaDOvUgr", "name": "Habico Construction", "website": "https://habico.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec5BrD9oDZLrQ7AF", "name": "Vitrerie KRT Inc", "website": "https://vitreriekrt.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "rec5eLLiqY2a7ARMb", "name": "Jacob Nettoyeur Urbain", "website": "https://jacobnettoyeur.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["nettoyeur(weak)"], "confidence": "Moyenne"}, {"id": "rec5j2BnO4D1csDiW", "name": "Masscon Construction", "website": "https://masscon.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec5oEosgMUJDVXOx", "name": "Toiture Novatrice inc.", "website": "https://toiturenovatrice.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "rec5zKnCtKF3KiAJI", "name": "Constructions François Roberge", "website": "https://constructionsfr.com", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "rec6B7b1wD2MbHAAI", "name": "Urbania Electrique Inc", "website": "https://urbaniaelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "rec6FhVEUM8UhZLzt", "name": "SNB Sciage de Béton", "website": "https://snbsciage.ca", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "rec6HSFMjy42Sk0QG", "name": "Fondation Bouchard inc.", "website": "https://fondationbouchard.com", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "rec6JYSWDQPNe3gSy", "name": "Toitures Ancestrales Patrick Fraser", "website": "https://toituresancestrales.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "rec6Qo4rvLO8IGyPu", "name": "Fernand Leblanc Ébenisterie", "website": "https://fernandleblancebenisterie.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "rec6dl3PoyQ8MbSbC", "name": "Groupe Séguin Plomberie Inc", "website": "https://groupeseguinplomberie.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "rec6h83Qy5RTcIZmG", "name": "Sarrazin Construction", "website": "https://sarrazinconstruction.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec6mWLiH84nPKIfr", "name": "Toitures CBC", "website": "https://toiturescbc.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "rec6uluckuI82TgMi", "name": "Gazon Savard Saguenay Inc", "website": "https://groupesavard.ca", "categories": ["Paysagement"], "matched_keywords": ["gazon(STRONG)"], "confidence": "Élevée"}, {"id": "rec74UWLKANbeHkFY", "name": "Préfab Gosselin Ltée Produits De Béton", "website": "https://prefabgosselin.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "rec7EJFVuffwW2j5s", "name": "Stratège Construction", "website": "https://strategeconstruction.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec7R1smfziAC2ax2", "name": "Global Green Construction", "website": "https://global-g-c.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec7bwttvUdtl00Mh", "name": "MT Ventilation - Gatineau", "website": "https://mtventilation.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "rec7kzj1pETwOlzZS", "name": "Les Industries Mann Inc", "website": "https://www.selectmops.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "rec8Bl46BaFwLSZTl", "name": "Construction Moderne QC", "website": "", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec8JonU4eF5I0McK", "name": "Entreprises Prestige Construction", "website": "https://prestige-construction.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec8YQ4Ctmt7ordRv", "name": "S T Maçonnerie Inc", "website": "https://stmaconnerie.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "rec8ejJ0hwSYmYDKw", "name": "Paysagiste BJR Landscaping", "website": "", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "rec8syWuZy97mn80p", "name": "Vaporel fabrication de vin maison", "website": "https://vaporel-vin.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["fabrication(weak)"], "confidence": "Moyenne"}, {"id": "rec8w1cwfobYqWD3X", "name": "Planchers Exclusifs P L Inc", "website": "https://planchersalacarte.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["planchers(STRONG)"], "confidence": "Élevée"}, {"id": "rec909F2BHAj8uT7I", "name": "Ébénisterie Madeira Architectural Inc", "website": "https://madeiraarchitectural.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "rec94y2qQ4ZTmgWLA", "name": "Atelier du sneaker", "website": "https://atelierdusneaker.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "rec96LQv6XOFOei5P", "name": "Atelier d'usinage Gaspé Machine Works Inc", "website": "https://usinagegaspe.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "rec98CM46F4fcSueF", "name": "ADR Poliquin Soudure inc.", "website": "https://www.adrpoliquin.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "rec9A3c8ii8la0B4q", "name": "HMCO Construction Inc.", "website": "https://www.hmcoconstruction.com/", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rec9trICXbui15TPm", "name": "Gravure Industrielle Lepage Inc", "website": "", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industrielle(weak)"], "confidence": "Moyenne"}, {"id": "rec9x5H56SI0b5nVr", "name": "Window Tint Montreal", "website": "https://windowtintmontreal.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["window(weak)"], "confidence": "Moyenne"}, {"id": "recAPoAbZv3JTJdvh", "name": "Excavation JF Caron Inc.", "website": "https://excavationjfcaron.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recAVQhPYZX8ouMMN", "name": "Services d'arbres Primeau", "website": "https://arbresprimeau.com", "categories": ["Paysagement"], "matched_keywords": ["arbres(weak)"], "confidence": "Moyenne"}, {"id": "recAXXn8aDGtEE8Xb", "name": "Vitrerie Fabreville", "website": "https://vfg.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "recAhw2eupdMnN8Hx", "name": "Constructions Architeq", "website": "", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "recAsu5BXgyZ9GFXR", "name": "S. Désormiers Excavation Inc.", "website": "https://desormiers-excavation.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recAuWtBypvazMotB", "name": "Piscine-mobile", "website": "https://www.piscine-mobile.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["piscine(STRONG)"], "confidence": "Élevée"}, {"id": "recB7YSrbYegXrPxp", "name": "Concept Design Paysagiste", "website": "https://conceptdesignpaysagiste.com", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "recBI5UCExHq3quGV", "name": "Usinage Precision Bilodeau", "website": "https://usinageprecisionbilodeau.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recBMM7nUITnMeoUI", "name": "Espace Construction Inc.", "website": "https://www.espaceconstruction.com/", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recBNxqIuTofln039", "name": "Chimney Sweepers", "website": "https://montrealchimneysweepers.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["chimney(STRONG)"], "confidence": "Élevée"}, {"id": "recBQfWNQONKiWyKc", "name": "Fabrication industrielle GT inc.", "website": "https://figt.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["fabrication(weak)"], "confidence": "Moyenne"}, {"id": "recBRC16BYlqWDODC", "name": "Atelier Transmission Automatique Précision Inc", "website": "", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recBTyN4ka1SsTIXd", "name": "Construction Alumex Inc", "website": "https://constructionalumex.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recBWrF6EHMuTwq0V", "name": "Toiture J-F Laurent Inc", "website": "https://toiturejflaurent.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "recBlNckjWZhLDZsF", "name": "Excavation Patrice Couture Inc.", "website": "https://excpcouture.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recC9c5pDg6YEwVDQ", "name": "Vitrerie Fabreville", "website": "", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "recCAwWF7tuw5YBb6", "name": "D3S Fabrication Inc.", "website": "https://d3sfab.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["fabrication(weak)"], "confidence": "Moyenne"}, {"id": "recCKRFVEiiChUNHF", "name": "Chronox-Lasertech Industries Inc", "website": "https://chronox-lasertech.com/en", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recCUIbTJd6nb3BDR", "name": "Arbres Service Katra Inc", "website": "https://servicearbrekatra.com", "categories": ["Paysagement"], "matched_keywords": ["arbres(weak)"], "confidence": "Moyenne"}, {"id": "recCfzqapQz8Yisxi", "name": "Atelier JEM Workshop", "website": "https://jemworkshop.org", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recCiduE3mvvuebwo", "name": "Ensemble pour la construction", "website": "", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recD4tHtZJU34RCEn", "name": "Calfeutrage Prospect", "website": "https://calfeutrageprospect.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["calfeutrage(STRONG)"], "confidence": "Élevée"}, {"id": "recDD81tlq0PktNdj", "name": "Metal-Art Soudure Inc", "website": "https://metalartsoudure.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recDPIafqKuJd3knG", "name": "Garage J C Simard", "website": "https://garagejcsimard.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recDSVbA8m8ufmn55", "name": "Constructions Christian Belleau", "website": "https://belleau.ca", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "recDWT8YK4pevJgEt", "name": "Soudure Jimssy Inc", "website": "https://soudurejimssy.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recDbJDVCifG9l6Js", "name": "Herrera Welding", "website": "https://soudureherrera.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["welding(STRONG)"], "confidence": "Élevée"}, {"id": "recDpFjpKYzA2gmYB", "name": "E.G.A. Électrique Inc.", "website": "https://egaelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recDvJx9b7P7eXDmQ", "name": "Patio Deck-O", "website": "https://patiodeck-o.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["patio(STRONG)"], "confidence": "Élevée"}, {"id": "recDy6eEHQDBHdEZ0", "name": "Air-Net Ventilation Plus Inc", "website": "https://ventilation.live", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "recE2sONYdWFYYdjl", "name": "Usinage Proto Concept Inc", "website": "usinageprotoconcept.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recE35JzvCamU8Vh2", "name": "Bertrand Système de Chauffage Inc.", "website": "https://bertrandhvac.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["chauffage(STRONG)"], "confidence": "Élevée"}, {"id": "recE6vfxPjCci5zNq", "name": "Vitrerie JL Inc", "website": "https://vitreriejl.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "recEJQPqayJM77eqB", "name": "Air Pur Ventilation", "website": "https://airpurventilation.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "recEaRSrKlpQuBk4h", "name": "Plomberie J Vachon Inc", "website": "https://jvachon.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recEb4XPxtqPBRDiv", "name": "Construction Di Paolo", "website": "https://constructiondipaolo.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recEc1H0sKdoN6pmH", "name": "Préfontaine Excavation Inc.", "website": "https://excavationprefontaine.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recEjThEMv4CAx6dx", "name": "Shandal Construction", "website": "https://shconstruction.net", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recFBVjTB9fHZDDcX", "name": "Plancher Times Flooring Inc.", "website": "https://planchertimes.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["plancher(STRONG)"], "confidence": "Élevée"}, {"id": "recFG4YwjBlza7TKo", "name": "McHenry Plumbing", "website": "https://mchenryplumbing.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plumbing(STRONG)"], "confidence": "Élevée"}, {"id": "recFVTeaBL6iYTNh3", "name": "Réparation Cheminée Québec", "website": "reparationcheminee.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["cheminee(STRONG)"], "confidence": "Élevée"}, {"id": "recFbjylxVZfmnlsf", "name": "Construction Sinistre Quebec", "website": "https://constructionsq.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recFemM7PE0aTH5Lh", "name": "Charpente MG", "website": "charpentemg.com", "categories": ["Construction"], "matched_keywords": ["charpente(STRONG)"], "confidence": "Élevée"}, {"id": "recFksTiDdpbSDBQN", "name": "Centre intégré de mécanique, de métallurgie et d'électricité (CIMME)", "website": "cimme.ca", "categories": ["Mécanique/Soudure/Fabrication", "Plomberie/Électricité/CVAC"], "matched_keywords": ["electricite(weak)", "mecanique(weak)"], "confidence": "Moyenne"}, {"id": "recFupouS7SElcscf", "name": "Toitures Nicolas Brunet", "website": "https://toituresnicolasbrunet.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recG0llSr1vMhD365", "name": "TBA Électrique Inc.", "website": "https://tbaelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recGF9YpAcr5cJMKz", "name": "Isolation TNG Ltée", "website": "https://tngisolation.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "recGGi827eXVUOKY0", "name": "ADM Construction Inc", "website": "https://admconstruction.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recGKh2s7CuK0EvCq", "name": "Déménagement INTACT", "website": "demenagementintact.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "recGKszEC8N03LcGn", "name": "Marchand Entrepreneur Électricien Ltée", "website": "https://marchandentrepreneur.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electricien(STRONG)"], "confidence": "Élevée"}, {"id": "recGLVr30dHsqXbfi", "name": "Garage Francois Grenier", "website": "https://garagefrancoisgrenier.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recGMZkRhz43aISfg", "name": "GROUPE FAUBERT REMORQUAGE", "website": "https://groupefaubert.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "recGQOH92wc2y6sIA", "name": "Construction Sorel Ltée", "website": "https://constructionsorel.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recGYTqVoLQAwOm4f", "name": "Les Entreprises Laurentien Electrique Inc", "website": "https://laurentienelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recGhjv8fkvPIT1Wg", "name": "Ventilation Detect Air", "website": "https://ventilationdetectair.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "recH1B56VZCqdA8pH", "name": "Les Industries Mann Inc. (Balais & Vadrouilles Select Mops Inc)", "website": "selectmops.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recH3iHGtA83yI8B0", "name": "Profil Excavation", "website": "https://profilexcavation.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recH6Oi7dRAvWgXSq", "name": "Bar Pression Pad Inc", "website": "barpression.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["pression(weak)"], "confidence": "Moyenne"}, {"id": "recHf1AvqETqx7eVT", "name": "Les Industries HW", "website": "lesindustrieshw.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recHjKybDXrZCcSYm", "name": "Plomberie Solutions MJ", "website": "plomberiesolutionsmj.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recHqMH31Bj28Li2Q", "name": "Plombier Centre-Ville", "website": "https://plombiercentreville.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "recHxBGdH7k1jAZ2g", "name": "Usinage URS", "website": "https://usinageurs.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recIcpfKbFVMibGpC", "name": "Acier Gauthier", "website": "https://aciergauthier.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["acier(weak)"], "confidence": "Moyenne"}, {"id": "recIhWhd4U46sQvmD", "name": "RHST Industries Inc", "website": "waterpearls.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recIner2VX08jxqMB", "name": "Les Couvreurs Multi-Toits", "website": "https://couvreursmt.com", "categories": ["Toiture"], "matched_keywords": ["couvreurs(STRONG)"], "confidence": "Élevée"}, {"id": "recJPjyfqAUw0nIY3", "name": "Vitrerie Savard Inc.", "website": "https://vitreriesavard.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "recJZlhyGajg7CqA9", "name": "Ébénisterie Louiseville Inc", "website": "https://ebenisterielouiseville.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "recJcMy9EFUTOhoI3", "name": "Atelier Ecluse", "website": "atelierecluse.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recJcp787hZTkCPGg", "name": "Isolation Thermique Pro", "website": "isolationthermique.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "recJdNerYj9qAorTo", "name": "Dion Électrique Inc.", "website": "https://dionelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recJp5eCe20ev5Ssg", "name": "L'atelier Rustik", "website": "", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recJpKwP0MZa4IV4J", "name": "C-Cure Electrique Inc", "website": "https://ccureelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recJqkWqgC6PmPN4a", "name": "Sablages De Planchers Renaud Et Fils", "website": "https://planchersrenaud.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["planchers(STRONG)"], "confidence": "Élevée"}, {"id": "recJyY7l915WYUHCf", "name": "JCR Constructions", "website": "jcrconstructions.com", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "recK69zbTkSXb3WjF", "name": "Acier Trimax Inc", "website": "trimaxsteel.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["acier(weak)"], "confidence": "Moyenne"}, {"id": "recK6Qw310A0eRg4d", "name": "Gatineau Plomberie", "website": "https://gatineauplomberie.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recK6VSDvG7YFFoOT", "name": "Toitures Aubin", "website": "https://toituresaubin.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recK7R1TBH8RbSPtn", "name": "Chez Le Peintre Décorateur", "website": "https://chezlepeintre.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["peintre(STRONG)"], "confidence": "Élevée"}, {"id": "recKDQYLK1I8pqJMo", "name": "Tôlerie et Soudage J-R-L Inc La Sarre", "website": "https://toleriesoudagejrl.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudage(STRONG)"], "confidence": "Élevée"}, {"id": "recKIXc83psikJB4v", "name": "REV HVAC", "website": "rev-hvac.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["hvac(STRONG)"], "confidence": "Élevée"}, {"id": "recKJ1NNELPcraHMT", "name": "Le Groupe Unik Déglaçage à Vapeur / Déneigement de toiture", "website": "betonmobileunik.com", "categories": ["Paysagement", "Toiture"], "matched_keywords": ["toiture(STRONG)", "deneigement(STRONG)"], "confidence": "Élevée"}, {"id": "recKNgYcq6EM3caD4", "name": "Usinage MC Inc", "website": "usinagemc.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recKWsbBad5LBo2IU", "name": "Alain Carrier Paysagiste", "website": "alaincarrierpaysagiste.com", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "recKcbTBic5uLmwwh", "name": "Plombier Charlesbourg", "website": "https://plombiercharlesbourg.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "recKcxtj0cM4N7ss8", "name": "Light Trim Siding Solutions", "website": "https://www.lighttrim.com/", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["siding(weak)"], "confidence": "Moyenne"}, {"id": "recKjxt1lQNsR8yhE", "name": "Entrepreneur Peintre Denis Prince", "website": "https://entrepreneurpeintredenisprince.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["peintre(STRONG)"], "confidence": "Élevée"}, {"id": "recKoyZ4AFXw81Qhd", "name": "Les Toitures S.S.", "website": "https://lestoituresss.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recL6u8Q1owttNLd8", "name": "Béton Fondation Plus", "website": "betonfondationplus.com", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recLCQY5pvhdlYZd0", "name": "Plomberie Laurentides Inc", "website": "https://plomberielaurentides.net", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recLDyqS0oUgZg04O", "name": "Strøm spa nordique", "website": "stromspa.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["spa(weak)"], "confidence": "Moyenne"}, {"id": "recLblDjZ2wEFRkaj", "name": "Toitures Professionnelles QC", "website": "toiturespro.ca", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recLmapCR1pUcI9DO", "name": "Mohawk Painting", "website": "mohawkpainting.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["painting(weak)"], "confidence": "Moyenne"}, {"id": "recLqjlArFhm4SoYf", "name": "Isolation HIZO Inc.", "website": "hizo.co", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "recLrDaU6QQ58xoKf", "name": "Villeneuve Électrique", "website": "villeneuveelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recM2FiNlSVC2XHAT", "name": "UrbanÉco Construction", "website": "https://urbanecoconstruction.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recMEZwBZc8JCz3MO", "name": "Ébénisterie Steve Genesse", "website": "https://ebenisteriestevegenesse.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "recMEyOwEAcqYoxY5", "name": "Produits De Batiment Nu-Co Inc.", "website": "prodnuco.com", "categories": ["Construction"], "matched_keywords": ["batiment(weak)"], "confidence": "Moyenne"}, {"id": "recMFUq902Ec8Mvw8", "name": "Construction Bertrand Dionne", "website": "https://cbdionne.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recMGsmDVeuxSo5bX", "name": "Garage Wendel Mathis", "website": "garagewendelmathis.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recMIyfErwsEKW0SF", "name": "Charpenterie Heirloom Timber Frames", "website": "https://heirloomtimberframes.com", "categories": ["Construction"], "matched_keywords": ["charpenterie(STRONG)"], "confidence": "Élevée"}, {"id": "recMcQG7IzjqECG7B", "name": "Polissage Béton Premium Inc.", "website": "https://polissage-beton.ca", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "recMlnW0s2Ey7awwh", "name": "Plomberie Alpha", "website": "plomberiealpha.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recMz0f96wpcUM2Og", "name": "LDEM Construction", "website": "ldemconstruction.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recN05WLLSX3vZNCE", "name": "Maîtres Du Patio", "website": "https://maitresdupatio.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["patio(STRONG)"], "confidence": "Élevée"}, {"id": "recN1yfjjJ8wfRLiW", "name": "Solide 3D Industries", "website": "solide3d.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recN33Q57LG9wOYQF", "name": "R Cossette Soudeur (2000) Ltée", "website": "rcossettesoudeur.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudeur(STRONG)"], "confidence": "Élevée"}, {"id": "recN4qpMOkIzqj74s", "name": "Caro De Céramique", "website": "https://carodeceramique.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ceramique(STRONG)"], "confidence": "Élevée"}, {"id": "recNQ4bFKV1FfCzSx", "name": "Fondation de l'Hôpital de Memphrémagog", "website": "fondationhopitalmagog.org", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recNWVQQnL7abYipt", "name": "Aquatec Entrepreneur Plombier", "website": "https://aquatecplombier.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "recNaJJPqiteIBaGF", "name": "CDF Usinage", "website": "usinagecdf.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recNbg3LKicE88OnK", "name": "Béton LC", "website": "https://betonlc.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "recNeHdnOl84FwVPy", "name": "Construction Charpexpert", "website": "charpexpert.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recNgx6n8ZpSOSOBG", "name": "Marc-André St-Pierre - Inspecteur et expert en bâtiment", "website": "https://inspecteur-expert-en-batiment.com", "categories": ["Construction"], "matched_keywords": ["batiment(weak)"], "confidence": "Moyenne"}, {"id": "recNn1apzPqQVEixt", "name": "L.E.A.D. Électrique Inc.", "website": "https://leadinc.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recNzg8W47sAncxwn", "name": "ADR Poliquin Soudure inc.", "website": "adrpoliquin.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recO7kV6tXQNHJwtl", "name": "Garage Allie Et Fils Inc", "website": "https://garageallie.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recOIyQOjQLujXfzV", "name": "René Perron Couvreur Ltée", "website": "https://perroncouvreurs.com", "categories": ["Toiture"], "matched_keywords": ["couvreur(STRONG)"], "confidence": "Élevée"}, {"id": "recONh2fBxOeV4OzH", "name": "Plomberie Jeff Gagné", "website": "https://plomberiejeffgagne.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recOO43tXGFTt0SYV", "name": "Méga Calfeutrage Inc", "website": "megacalfeutrage.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["calfeutrage(STRONG)"], "confidence": "Élevée"}, {"id": "recORMQSF8bclQqtq", "name": "Climatisation Fortier et Frères Ltée", "website": "https://climatisationfortier.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["climatisation(STRONG)"], "confidence": "Élevée"}, {"id": "recObpG5I8xbgoomD", "name": "Services Fondation Québec", "website": "servicesfondation.ca", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recOorxumuE0GzaJ7", "name": "Électricité Des Deux Rives Inc", "website": "https://eddr.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electricite(weak)"], "confidence": "Moyenne"}, {"id": "recOr31HUHIzXXjip", "name": "Soudure JSJ Inc.", "website": "https://soudurejsj.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recP7SIJPC8g4ymrZ", "name": "Construction LCE", "website": "https://constructionlce.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recPFaFSmyKsS69OX", "name": "Fondations La Roche et Fils", "website": "https://fondationslaroche.com", "categories": ["Construction"], "matched_keywords": ["fondations(STRONG)"], "confidence": "Élevée"}, {"id": "recPXwNaA5PaAz2bp", "name": "Rodrigue Peintre", "website": "https://rodriguepeintre.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["peintre(STRONG)"], "confidence": "Élevée"}, {"id": "recPa6JPJj4Zdixax", "name": "Technoform Industries Ltd", "website": "technoform.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recPaHNkbDrKaNurY", "name": "Huile à Chauffage Raymond", "website": "https://chauffageraymond.qc.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["chauffage(STRONG)"], "confidence": "Élevée"}, {"id": "recPir5LvfmzgQONh", "name": "OM Industriel Inc", "website": "omindustriel.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industriel(weak)"], "confidence": "Moyenne"}, {"id": "recPzFhvfCbwl0dp7", "name": "Charpente Bois Massif", "website": "charpentemasif.ca", "categories": ["Construction"], "matched_keywords": ["charpente(STRONG)"], "confidence": "Élevée"}, {"id": "recQHrgpbhqWlrk3s", "name": "Déménagement et Transport HK", "website": "transport-hk.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "recQNIl4vE6qFAf2d", "name": "IGNIS INFERNI FORGE", "website": "https://ignis-inferni.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["forge(STRONG)"], "confidence": "Élevée"}, {"id": "recQhuuLCHLoMGOTM", "name": "Usinage High-Tech inc.", "website": "https://usinagehigh-tech.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recQtsd5mEfR2nBAZ", "name": "Lavage Auto - Pro Nanotech - Longueuil", "website": "https://pronanotech.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["lavage(weak)"], "confidence": "Moyenne"}, {"id": "recQwv5zP65Qcz4k2", "name": "Les Industries Braidwood Ltée.", "website": "https://braidwoodgear.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recREyYvvW5wiDPPb", "name": "Plomberie Lorenzo Robitaille et Fils", "website": "plomberie-chauffage.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recRFdJd5IgIaR3TA", "name": "Pavex Design Excavation & Pavage", "website": "https://pavexdesign.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["pavage(STRONG)"], "confidence": "Élevée"}, {"id": "recRK6hS4e5IVAahX", "name": "Plomberie Chauffage BRP Inc", "website": "https://plomberiechauffagebrp.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recRVrFngcoCpzCkA", "name": "Usinage Precision Bilodeau", "website": "usinageprecisionbilodeau.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recRYTcEvS77RlhSn", "name": "Ancienne shop (Soudure Rene Thibault)", "website": "rthibault.net", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recRanBaaMJc0n0mO", "name": "JFA Plomberie", "website": "https://plombierdemontreal.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recReK1RW26VeHo66", "name": "Plomberie Montero", "website": "https://plomberiemontero.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recRhIoco5ASE4XXW", "name": "Isolation Thermique Plus", "website": "isolationthermiqueplus.net", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "recRhTjjBekLDpC6H", "name": "SOS Plomberie", "website": "https://sosplomberie.quebec", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recRhq010DDSYTdzc", "name": "Construction NR", "website": "constructionnr.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recRjMLwUZexdim5w", "name": "Construction Pelroy", "website": "constructionpelroy.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recRmazY8Sf2GIIrQ", "name": "Vitrerie Boily Inc", "website": "https://vitrerieboily.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "recRpbaH3FEACvGzM", "name": "ADJ Soudure Générale", "website": "adjsoudure.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recRsNBsWvacTFzMP", "name": "Chauffage Solaire Plus", "website": "chauffagesolaire.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["chauffage(STRONG)"], "confidence": "Élevée"}, {"id": "recRzDLHzeYEdAUQT", "name": "Atelier M", "website": "https://atelierm.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recS3zNZGmxdkMcEC", "name": "Plomberie Capital", "website": "https://plomberiecapital.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recS4AGO9nRNZqJtE", "name": "Boutique Atelier du Moulin", "website": "boutiqueatelierdumoulin.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recSICDjSDzhh1tqJ", "name": "Demenagement et Transport HK", "website": "transport-hk.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "recSJLuExLTqlTtFk", "name": "ATELIER SIGNATURE", "website": "https://ateliersignature.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recSPn9TY65HPzxeD", "name": "Excavation Gricon", "website": "https://gricon.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recSPx3JNN9i6AY7m", "name": "Acier Specialise Bp Inc", "website": "https://salomontool.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["acier(weak)"], "confidence": "Moyenne"}, {"id": "recST8uwTTaWZjhsG", "name": "Garage Martin St-Onge", "website": "https://garagemso.com/", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recSVKQBrnxKWf86d", "name": "Acier Bouchard Québec inc", "website": "https://acier-bouchard.qc.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["acier(weak)"], "confidence": "Moyenne"}, {"id": "recSZasKxknS923h9", "name": "Moore Electrique", "website": "https://mooreelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recScgSWvQwDbdojh", "name": "Demenagement INTACT", "website": "demenagementintact.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "recSm5pVNSivOiOUT", "name": "Maçonnerie Couture", "website": "https://maconneriecouture.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "recSnJ79vfLgsi3HE", "name": "Ébénisterie HOM", "website": "https://ebenisteriehom.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "recSwDiHT13FPo7SW", "name": "Extermination Falcon Inc.", "website": "exterminationfalcon.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["extermination(STRONG)"], "confidence": "Élevée"}, {"id": "recT0cPcU9QYNgGEh", "name": "Pavage Bolduc", "website": "https://pavagebolduc.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["pavage(STRONG)"], "confidence": "Élevée"}, {"id": "recTBv7hLcaHOSKXx", "name": "M Valois Electrique", "website": "https://mvaloiselec.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recTHLi7boxJ6Ezqa", "name": "Pokonobe Industries Inc.", "website": "https://pokonobe.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recTWUggrCr2sBMgq", "name": "Ébénisterie Ebenart", "website": "https://ebenart.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "recTa2sbOmMHTbeSN", "name": "Peinture Platinium", "website": "https://peintureplatinium.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["peinture(STRONG)"], "confidence": "Élevée"}, {"id": "recTbjMl4tYnikg9e", "name": "LiliFlore - Artiste peintre", "website": "liliflore.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["peintre(STRONG)"], "confidence": "Élevée"}, {"id": "recTkcSkfOMB0dQ6w", "name": "Les Constructions L.A.D Lessard", "website": "https://ladlessard.com", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "recTrX8bA2U8vjusc", "name": "Concept AMA - Armoires de Cuisine", "website": "https://conceptama.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["armoires(weak)"], "confidence": "Moyenne"}, {"id": "recTwXfi1KIPSFJMc", "name": "Serie-Act Peinture", "website": "https://serieactpeinture.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["peinture(STRONG)"], "confidence": "Élevée"}, {"id": "recU406bxX2J8IfBe", "name": "Fondation KANPE Foundation", "website": "kanpe.org", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recU6UxjuxsBYzeO6", "name": "Excavation Robert Fournier", "website": "https://excavationrobertfournier.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recUGdyj5A1O6WEIs", "name": "Bota Bota spa-sur-l'eau", "website": "botabota.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["spa(weak)"], "confidence": "Moyenne"}, {"id": "recUK3mB5nCyOrQ9v", "name": "Mécanique Brochu", "website": "mecaniquebrochu.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["mecanique(weak)"], "confidence": "Moyenne"}, {"id": "recUPbvBzf3ovLDVk", "name": "Construction Signée René", "website": "https://constructionsigneerene.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recUexPMvzb4TY8hf", "name": "Rawdon Metal Inc", "website": "velo-rack.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["metal(weak)"], "confidence": "Moyenne"}, {"id": "recUf3a3QKAHMapSN", "name": "Metal-Art Soudure Inc", "website": "https://metalartsoudure.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recUhbs9JHDyW7lKp", "name": "Toiture Quali-Pro", "website": "https://toiturequalipro.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "recUhfChQ1Gv1OweK", "name": "Toit Du Sud", "website": "https://toitdusud.com", "categories": ["Toiture"], "matched_keywords": ["toit(weak)"], "confidence": "Moyenne"}, {"id": "recUjobqYc9a8ntXT", "name": "Garage Mécanique VAP", "website": "garagevap.com", "categories": ["Extérieur/Bâtiment", "Mécanique/Soudure/Fabrication"], "matched_keywords": ["mecanique(weak)", "garage(weak)"], "confidence": "Moyenne"}, {"id": "recUyHkKdmNJ6ZQ2T", "name": "Plomberie Lalonde", "website": "https://plomberielalonde.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recV3mxhKyTWPTg2b", "name": "Maçonnerie Oligny", "website": "https://maconnerieoligny.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "recVCkUMoHskeDArd", "name": "Atelier d'Usinage Ray-Jean Inc", "website": "usinagerayjean.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recVRP0wCMJOmE52c", "name": "Remorquage.Express", "website": "https://remorquage.express", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "recVRnqnwqHy87mbA", "name": "Alex Maçonnerie", "website": "alexmaconnerie.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "recVaVuzAEQ9JZaRP", "name": "Tartan Turf Industries Inc", "website": "tartanturf.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recVdtfFfnKH7NiLO", "name": "Bleau Terrassement", "website": "https://bleauterrassement.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["terrassement(STRONG)"], "confidence": "Élevée"}, {"id": "recVlvj5PnoiYjYmI", "name": "Fondations M Bérubé", "website": "https://fondationsmberube.com", "categories": ["Construction"], "matched_keywords": ["fondations(STRONG)"], "confidence": "Élevée"}, {"id": "recVt1UY2nP4T4dXb", "name": "Garage A & F", "website": "autoaf.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recW6RKwUASo5ObUa", "name": "Maçonnerie Guy Leblanc Inc.", "website": "maconnerieguyleblanc.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "recWSfJsMn3x8wruL", "name": "FAC Construction", "website": "facconstruction.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recWX389a4GJdgx48", "name": "Excavation Masse et Fils", "website": "excavationmasse.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recWbVIJ47G5cOjWW", "name": "Nettoyage Gatineau", "website": "nettoyagegatineau.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["nettoyage(weak)"], "confidence": "Moyenne"}, {"id": "recWcVc5ZS8sBLVC2", "name": "Atelier Dansereau", "website": "https://atelierdansereau.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recWiMX2zy3zObVbQ", "name": "Ventilation Volmair Inc.", "website": "ventilationvolmair.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "recWjsbUB9eDE1GQ3", "name": "Vitrerie Pro-Verre Inc", "website": "https://vitrerieproverre.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "recWqbf475MM91llP", "name": "L'Atelier de Gravure Industrielle du Quebec", "website": "lagiq.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recWr8Uk73jhRivVG", "name": "Pavage Massie", "website": "https://pavagemassie.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["pavage(STRONG)"], "confidence": "Élevée"}, {"id": "recWvY2PyqpVlte8F", "name": "Atomic soudure", "website": "atomicsoudure.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recXDEpIDtXbLxIac", "name": "Metal Roof Canada", "website": "metalroofcanada.ca", "categories": ["Toiture", "Mécanique/Soudure/Fabrication"], "matched_keywords": ["metal(weak)", "roof(weak)"], "confidence": "Moyenne"}, {"id": "recXG6ZgiUxBOBoNo", "name": "Roof AI", "website": "roofai.com", "categories": ["Toiture"], "matched_keywords": ["roof(weak)"], "confidence": "Moyenne"}, {"id": "recXM5FCw55jibNFN", "name": "O Coiffure & Spa", "website": "ocoiffurespa.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["spa(weak)"], "confidence": "Moyenne"}, {"id": "recXO1m8yU8QJXSMg", "name": "Tartan Turf Industries Inc", "website": "https://www.tartanturf.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recXWoYb9RYE8Jl0b", "name": "Atelier Aux Mille Et Une Feuilles", "website": "relieur.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recXilVNWtCaZwmKX", "name": "Menuiserie du Cran Inc", "website": "https://menuiserieducran.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["menuiserie(STRONG)"], "confidence": "Élevée"}, {"id": "recXklgN9iIKN1QXB", "name": "Couvreur Denis Courville", "website": "https://couvreurdeniscourville.com", "categories": ["Toiture"], "matched_keywords": ["couvreur(STRONG)"], "confidence": "Élevée"}, {"id": "recXobH23RDWvgpRk", "name": "Servi-Portes", "website": "servi-portes.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["portes(weak)"], "confidence": "Moyenne"}, {"id": "recXtZw4hdvZkt6TZ", "name": "Climatisation A.C inc", "website": "climatisationac.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["climatisation(STRONG)"], "confidence": "Élevée"}, {"id": "recY1nT4dmTfgZbzh", "name": "Air Climatisation VS", "website": "airclimatisationvs.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["climatisation(STRONG)"], "confidence": "Élevée"}, {"id": "recYL6G2LJ3QSMfgt", "name": "Plomberie Gagné et Fils", "website": "https://gagnefils.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recYLUfGDcHCpX4eC", "name": "Soudure Brault Inc", "website": "soudurebrault.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recYPjSsSvyChnLvd", "name": "Toiture Atlas", "website": "https://atlastoitures.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "recYT5mHGBBkIuQba", "name": "Fondation Espace pour la vie", "website": "fondationespacepourlavie.ca", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recYW5cKExMJDA2yD", "name": "Atelier Kustom INC", "website": "https://atelierkustom.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recYZ5GhdTvjtfxTc", "name": "Indusco Isolation Inc", "website": "indusco.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "recYaasns31VSgX98", "name": "Usinage mobile de machinerie lourde Omnifab", "website": "usinagemobile.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recYhjPE5WTSKLhpW", "name": "Paysagement Aubin Lacombe", "website": "https://paysagementaubinlacombe.com", "categories": ["Paysagement"], "matched_keywords": ["paysagement(STRONG)"], "confidence": "Élevée"}, {"id": "recYka5jjeeGhBJkN", "name": "Plomberie Chauffage M&M Laurentides Inc", "website": "https://plomberiemm.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recYxhGZSeguO8oRU", "name": "Pure Plomberie", "website": "pureplomberie.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recZDwMrKOv4a1JwO", "name": "Garage Allie Et Fils Inc", "website": "garageallie.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recZEecQ3ngv08luS", "name": "Soudure & Mecanique Plan B Inc", "website": "planbwelding.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recZNq412Mn6TAMEj", "name": "Plombier Rosemère", "website": "https://plombierrosemere.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "recZf58TBRfma37Yd", "name": "Toitures S. Numainville", "website": "https://toituresnumainville.ca", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recZpbcG84wccOQ4l", "name": "Construction Daniel Dargis Inc.", "website": "https://dargisconstruction.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recZqAerzx6OrUZo6", "name": "Construction et Pavage Dujour", "website": "https://pavagedujour.ca", "categories": ["Extérieur/Bâtiment", "Construction"], "matched_keywords": ["construction(STRONG)", "pavage(STRONG)"], "confidence": "Élevée"}, {"id": "reca7Ol3YeCY8MOkS", "name": "Bear Claw Machining", "website": "bearclawmachining.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["machining(STRONG)"], "confidence": "Élevée"}, {"id": "recaCGwJOTGeZOi0j", "name": "Menuiserie du Cran Inc", "website": "menuiserieducran.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["menuiserie(STRONG)"], "confidence": "Élevée"}, {"id": "recaKaaxZNIbBqPI2", "name": "Nettoyage de Qualité inc.", "website": "nettoyagedequalite.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["nettoyage(weak)"], "confidence": "Moyenne"}, {"id": "recaXZoZ6D7qF0rNL", "name": "Déménagement Delagrave", "website": "delagrave.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "recae4HbBBONrxjiU", "name": "Levallon Paysagiste", "website": "levallon.ca", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "recaskS4u36DjulMC", "name": "Fondation de l'Hôtel-Dieu de Montmagny", "website": "fondationhoteldieumontmagny.com", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recazzlqXjrJ1qS22", "name": "Les Services Plomberie Sylvain", "website": "https://plomberiesylvain.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recb2i70SMSs6AXon", "name": "Technoform Industries Ltd", "website": "https://www.technoform.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recbJWzSf4pV6XU4f", "name": "Couverture Nord Sud", "website": "https://couverturenordsud.com", "categories": ["Toiture"], "matched_keywords": ["couverture(STRONG)"], "confidence": "Élevée"}, {"id": "recbUosA3Draplvu5", "name": "Fabricant de serres MasSerre.ca", "website": "https://www.maserre.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["fabricant(weak)"], "confidence": "Moyenne"}, {"id": "recba5z1wh38kfgU4", "name": "Les Constructions Fbc", "website": "https://lesconstructionsfbc.com", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "recbf6oLhXSTlSTad", "name": "Excavation Parenteau Inc.", "website": "https://excavationparenteau.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recbkwsbCKwpBbKxE", "name": "Atelier d'Armoires de Cuisine La Fabrique Inc", "website": "https://armoireslafabrique.com", "categories": ["Métiers spécialisés", "Mécanique/Soudure/Fabrication"], "matched_keywords": ["armoires(weak)", "atelier(weak)"], "confidence": "Moyenne"}, {"id": "recblmQLcx3AMzchE", "name": "Eudore Boivin Tuiles de Parterre Ltee", "website": "https://betonboivin.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["tuiles(STRONG)"], "confidence": "Élevée"}, {"id": "recbtGq2ix0UKsOwL", "name": "Beton Gestion Conseil", "website": "betongestionconseil.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "recbxHOVqWOiZvoyH", "name": "Entreprise Électrique MJL", "website": "https://mjlelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recc1f5jEWQD5V8NU", "name": "Réno-Plâtre DC Inc", "website": "https://renoplatredc.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["platre(weak)"], "confidence": "Moyenne"}, {"id": "reccPyLCnWERQb4Yw", "name": "Création Harvey Métal Inc", "website": "https://harveymetal.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["metal(weak)"], "confidence": "Moyenne"}, {"id": "reccWGkeVvRJc8hJt", "name": "Paysagiste Idée Concept", "website": "https://paysagisteideeconcept.com", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "recckTsL1DYx3U22K", "name": "Urbano Patio", "website": "https://urbanopatio.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["patio(STRONG)"], "confidence": "Élevée"}, {"id": "recckVHWFO48Y35FP", "name": "Les Fenêtres 2000 inc", "website": "https://borealisdev.net", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["fenetres(weak)"], "confidence": "Moyenne"}, {"id": "reccva3rTOaHdcTi9", "name": "Atelier La Pomme", "website": "https://atelierlapomme.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recd3ap2MhG592JuR", "name": "Nettoyage Uno", "website": "https://nettoyageuno.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["nettoyage(weak)"], "confidence": "Moyenne"}, {"id": "recd5I4chaGcYetGR", "name": "Pro-Direct Industriel Inc.", "website": "prodirectindustriel.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industriel(weak)"], "confidence": "Moyenne"}, {"id": "recdDESIbX4qc9Uzh", "name": "Plomberie Gariépy Inc", "website": "https://plomberiegariepy.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recdRGXAaZKumGctg", "name": "Marc Cossette Électricien", "website": "marccossette.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electricien(STRONG)"], "confidence": "Élevée"}, {"id": "recdordKAXFW3UNVB", "name": "Atelier RMR", "website": "atelierrmr.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recduOx9RnFFD9ngT", "name": "We Care Cleaning Inc.", "website": "wecarecleaning.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["cleaning(weak)"], "confidence": "Moyenne"}, {"id": "recdzIiwQa8CiIYgv", "name": "Usinage Duplessis", "website": "usinageduplessis.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "rece2XmMj8zZ6kxna", "name": "Doyle Rénovations Inc.", "website": "https://doylerenovations.ca", "categories": ["Construction"], "matched_keywords": ["renovations(STRONG)"], "confidence": "Élevée"}, {"id": "rece5vOeJ8t8vAH0j", "name": "Maçonnerie Pro-Conseil", "website": "https://maconnerieproconseil.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "receBavivlsEI3nUE", "name": "Construction MHV", "website": "https://constructionmhv.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "receCVjjr83kguIjK", "name": "Tôlerie et Soudage J-R-L Inc", "website": "toleriesoudagejrl.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudage(STRONG)"], "confidence": "Élevée"}, {"id": "receIRtag9zCTDmn4", "name": "Soudure Bess Design", "website": "soudurebessdesign.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "receOd0gH6RbOeEAW", "name": "Maçonnerie Légendaire", "website": "maccallegendaire.ca", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "receYsJySVsgwXcUO", "name": "Rénovation M Potvin", "website": "https://portessolariumsvaudreuil.ca", "categories": ["Construction"], "matched_keywords": ["renovation(STRONG)"], "confidence": "Élevée"}, {"id": "recefZpnJib8FvxiJ", "name": "Plomberie JL Inc", "website": "https://plomberiejl.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recekz7jbtWDpfghg", "name": "Alliantis Metal Inc.", "website": "alliantis.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["metal(weak)"], "confidence": "Moyenne"}, {"id": "recezFg4Ivv1D1iUe", "name": "Plomberie St-Pie X - Gicleurs de l'Est", "website": "https://plomberiestpiex.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recfJ7vFfxtM6WCSN", "name": "SRL mécanique de véhicule lourds", "website": "srlmecanique.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["mecanique(weak)"], "confidence": "Moyenne"}, {"id": "recfLglxDEVh9eM2r", "name": "Cré-Actif Construction", "website": "cre-actif.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recfOnZ2KfNjKKJw8", "name": "Climatisation Duplessis Inc.", "website": "climatisationduplessis.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["climatisation(STRONG)"], "confidence": "Élevée"}, {"id": "recfr2GVzJBwD2kWF", "name": "Ventilation E. Boucher Inc.", "website": "https://ventilationeboucher.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "recfvNogXFjxAAaHg", "name": "Toitures Trudel", "website": "https://toiturestrudel.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recgEzucjgc2cWvUj", "name": "Hulix Construction", "website": "https://hulixconstruction.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recgQsdXj47lAyB5s", "name": "Terrassement Ahuntsic Inc.", "website": "https://tersic.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["terrassement(STRONG)"], "confidence": "Élevée"}, {"id": "recgaD8KZCupi9Jhu", "name": "Remorquage Bourdeau", "website": "https://remorquagebourdeau.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "recgi9XyHndBgf6Df", "name": "Remorquage Drummondville - CRDQ", "website": "https://drummondvilleremorquage.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "recgiGzJ1jfSx3PzC", "name": "Generation Spas Inc", "website": "generationspas.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["spas(weak)"], "confidence": "Moyenne"}, {"id": "recgnQKg3FKniwd8a", "name": "Chronox-Lasertech Industries Inc", "website": "https://www.chronox-lasertech.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "rechAD3cij5soruPt", "name": "Atelier Olmsted", "website": "https://atelierolmsted.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "rechAgXXgLj7ie2uZ", "name": "Entrepreneur en construction", "website": "https://entrepreneurconstruction.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rechPoiPmrn6OFUdz", "name": "Couvre-Plancher Élite", "website": "couvreplancherelite.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["plancher(STRONG)"], "confidence": "Élevée"}, {"id": "rechQXnnDf5Eeuav2", "name": "Construction JTD Aubé", "website": "https://jtdaube.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rechXMDSWjbYyisDD", "name": "M&B Électrique", "website": "mb-electrique.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "rechism6AOTGHHpip", "name": "Fondation Caramel", "website": "fondationcaramel.com", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "rechsTkxY15t3GBAH", "name": "Peinture Pierre Simard", "website": "peinturepierresimard.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["peinture(STRONG)"], "confidence": "Élevée"}, {"id": "rechxVK7abaBoHagD", "name": "LC Soudure Inc.", "website": "lcsoudure.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "reci30mNAE4enu0tx", "name": "Remorquage M. St-Jérôme", "website": "https://remorquagem-stjerome.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "reciIzxxZln3EOTS6", "name": "Remorquage Orford", "website": "https://remorquageorford.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "reciJGHfwXoVUpY6k", "name": "ABC Pest Control and Extermination", "website": "exterminationabc.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["extermination(STRONG)"], "confidence": "Élevée"}, {"id": "reciRSTlnWvnnlXem", "name": "Fondation AGES-Ajouter de la vie aux années", "website": "fondationages.org", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recibczGaSQzCCrff", "name": "Gravel Maintenance & Painting", "website": "", "categories": ["Métiers spécialisés"], "matched_keywords": ["painting(weak)"], "confidence": "Moyenne"}, {"id": "recii9XCb20gXiBLH", "name": "Constructions Jacques Audet", "website": "constructionsjaudet.com", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "reciiufVXDaexMjfI", "name": "Construction Bouchard N D L Inc.", "website": "https://bouchardndl.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "reciivHt0zO7cQf9c", "name": "Construction Lalonde", "website": "https://constructionlalonde.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recimH1kWjLsz18QL", "name": "Constructions Guy Sébas Inc.", "website": "https://guysebas.com", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "recj0CSJRM2hjQZq1", "name": "Plombier Jonquière", "website": "https://plombierjonquiere.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "recj6S2970eAI0YFn", "name": "Produits De Batiment Nu-Co Inc.", "website": "https://prodnuco.com", "categories": ["Construction"], "matched_keywords": ["batiment(weak)"], "confidence": "Moyenne"}, {"id": "recjTxm5mCaQOZCJs", "name": "Acier Specialise Bp Inc", "website": "salomontool.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["acier(weak)"], "confidence": "Moyenne"}, {"id": "recjXQkVScP6zPlWp", "name": "CMC | Carrier Mausoleums Construction, Inc.", "website": "cmc-carrier.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recjgozJ3PDhZYZ0j", "name": "Planchers Mascouche (Les Tapis Ste-Marie Inc)", "website": "planchersmascouche.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["planchers(STRONG)"], "confidence": "Élevée"}, {"id": "recjsJB9EiiwiDyr8", "name": "Solutions Rénovation Québec", "website": "solutionsrenovationquebec.ca", "categories": ["Construction"], "matched_keywords": ["renovation(STRONG)"], "confidence": "Élevée"}, {"id": "recjzKYEUmACLX1PM", "name": "Paysagiste Idee Concept", "website": "paysagisteideeconcept.com", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "reck6AnOvSmLAIbhY", "name": "Toitures LV", "website": "https://toitureslv.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "reck7hBiSe53cSWzn", "name": "Scellant Millenium", "website": "scellantmillenium.net", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["scellant(STRONG)"], "confidence": "Élevée"}, {"id": "reck7qP24rRN89axu", "name": "Metal Plessis Inc.", "website": "go-track.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["metal(weak)"], "confidence": "Moyenne"}, {"id": "reckJF1jv56BTX5nn", "name": "Remorquage Mario Phaneuf", "website": "https://remorquagemariophaneuf.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["remorquage(STRONG)"], "confidence": "Élevée"}, {"id": "reckPHT3fDeAt0Kmd", "name": "Pompes à Béton Tremblay Inc.", "website": "https://pompestremblay.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "reckStuSt6bkeupBo", "name": "Ébénisterie Guy Dufour Enr", "website": "https://ebenisterieguydufour.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "reckZqye6bGv2EUzg", "name": "ADR Poliquin Soudure inc.", "website": "https://adrpoliquin.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "reckliGe55EuCJzkb", "name": "R Cossette Soudeur (2000) Ltée", "website": "https://rcossettesoudeur.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudeur(STRONG)"], "confidence": "Élevée"}, {"id": "reclCwFcxCbUQWVns", "name": "IFC Climatisation", "website": "https://ifcclimatisation.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["climatisation(STRONG)"], "confidence": "Élevée"}, {"id": "reclDxemexvAbeK0m", "name": "CRTO Toiture", "website": "https://crtotoiture.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "reclPQgfrq0mCa73M", "name": "Planchers Economiques", "website": "plancherseconomiques.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["planchers(STRONG)"], "confidence": "Élevée"}, {"id": "reclUbto0TK0P2bVd", "name": "Toitures Perfection", "website": "https://toituresperfection.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "reclYOC6s4ll8wIOd", "name": "Isolation Isomax Inc", "website": "https://isomax.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "reclfH3nQtiaNMgzZ", "name": "Menuiserie Nunez-Laneville", "website": "https://palettesmnl.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["menuiserie(STRONG)"], "confidence": "Élevée"}, {"id": "reclfniu7z7WlVyrr", "name": "Toitures Signées Eb Inc", "website": "https://toitureseb.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "reclhdFN5mnynllNv", "name": "Toit Tech Expert 2010", "website": "https://toitech-expert.com", "categories": ["Toiture"], "matched_keywords": ["toit(weak)"], "confidence": "Moyenne"}, {"id": "reclhgfJplwCL5nTs", "name": "Atelier Gilbert", "website": "ateliergilbert.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recljs4wpSKhoIfz6", "name": "Vitrerie Roy & Fils Inc.", "website": "vitrerieroyetfils.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "reclkcINyudrp9cUv", "name": "Plombier Chicoutimi", "website": "https://plombierchicoutimi.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "reclmxJ0KDCoOJI66", "name": "Spa Carré St-Louis", "website": "spacarrestlouis.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["spa(weak)"], "confidence": "Moyenne"}, {"id": "reclt5sTzahGJ6dg1", "name": "Toitures E.C. Inc.", "website": "https://toitures-ec.ca", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recm2X4Ypk74yN3HP", "name": "A.L. Plomberie Inc", "website": "https://alplomberie.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recm76mLt7m9js5e3", "name": "Réfrigération Centre-du-Québec Inc", "website": "https://refrigerationcentreduquebec.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["refrigeration(STRONG)"], "confidence": "Élevée"}, {"id": "recmIcdXuXDo4jH5B", "name": "Paysagement Duguay", "website": "paysagementduguay.ca", "categories": ["Paysagement"], "matched_keywords": ["paysagement(STRONG)"], "confidence": "Élevée"}, {"id": "recmwYXQH22iSDLhM", "name": "Aux Portes du Soleil", "website": "auxportesdusoleil.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["portes(weak)"], "confidence": "Moyenne"}, {"id": "recn2Dv1OkAhOApjx", "name": "Toitures Ancestrales Patrick Fraser", "website": "https://toituresancestrales.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recnDnZr0Grb4CSNM", "name": "Fondation Bob Bissonnette", "website": "https://fondationbobbissonnette.com", "categories": ["Construction"], "matched_keywords": ["fondation(STRONG)"], "confidence": "Élevée"}, {"id": "recnEMygcqaexCZWm", "name": "Béton Lemieux", "website": "https://betonlemieux.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "recnEZnUrh7aEyE12", "name": "Acier Trimax Inc", "website": "https://trimaxsteel.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["acier(weak)"], "confidence": "Moyenne"}, {"id": "recnPYu1JGZOlLJlJ", "name": "SINA Construction", "website": "https://sinaconstruction.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recnY38CH1oz1MvMG", "name": "Toiture d'Acier - Groupe CO-REC", "website": "https://toituredacier.com", "categories": ["Toiture", "Mécanique/Soudure/Fabrication"], "matched_keywords": ["toiture(STRONG)", "acier(weak)"], "confidence": "Élevée"}, {"id": "recnerIoAtqYUrXnb", "name": "Pavage Asphalte QC", "website": "pavageasphalte.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["asphalte(STRONG)"], "confidence": "Élevée"}, {"id": "recnevS5qck7PM3B8", "name": "Soudure JSJ Inc.", "website": "soudurejsj.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recngF8h14Ev9DlN3", "name": "Pro-Sol Excavation", "website": "https://pro-sol-excavation.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recnmfnwEHZ6zovf9", "name": "Structures Covibro", "website": "https://covibro.com", "categories": ["Construction"], "matched_keywords": ["structures(weak)"], "confidence": "Moyenne"}, {"id": "recnvMELsFqJd0h9Z", "name": "Toitures MKVC Prestige", "website": "https://toituresmkvcprestige.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "reco5TfGXcFc1AIRV", "name": "Fabrication S Houle Inc", "website": "shoule.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["fabrication(weak)"], "confidence": "Moyenne"}, {"id": "recoQujG1Ch6JkO8z", "name": "Revêtement sur Métaux", "website": "https://rsmetal.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["revetement(weak)"], "confidence": "Moyenne"}, {"id": "recoXTBGcigaJSBC2", "name": "Toiture JKO", "website": "https://toiturejko.ca", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "recoejIvtpbwvivDt", "name": "Atelier du PetitMoteur Michel Lutz", "website": "https://petitmoteur1995.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recogZfdNgHllA1m8", "name": "Atelier d'Usinage Moteur de Beauce Inc", "website": "atelierusinagemoteur.net", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "reconTSDlBoLJQGn9", "name": "Construction Rock Dufour Inc", "website": "https://rockdufour.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recoz3fWEsKXJDIsR", "name": "SINA Construction", "website": "https://www.sinaconstruction.com/", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recp5XLp8bcrvJux1", "name": "Toiture ABC", "website": "https://toitureabc.ca", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "recp66s4MqSefQq6i", "name": "Le Paysagiste Laval", "website": "lepaysagistelaval.ca", "categories": ["Paysagement"], "matched_keywords": ["paysagiste(STRONG)"], "confidence": "Élevée"}, {"id": "recp8DIIsHhpkOLaG", "name": "Plomberie Bernier Inc", "website": "https://plomberiebernier.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recpIhDo0zrFvm8db", "name": "Senterre Entrepreneur Général", "website": "https://senterreentrepreneurgeneral.com", "categories": ["Construction"], "matched_keywords": ["entrepreneur general(STRONG)"], "confidence": "Élevée"}, {"id": "recpShvHBR9UYOi3c", "name": "Paysagiste Art Patio inc.", "website": "https://artpatio.ca", "categories": ["Paysagement", "Extérieur/Bâtiment"], "matched_keywords": ["paysagiste(STRONG)", "patio(STRONG)"], "confidence": "Élevée"}, {"id": "recpTqmh4FITdjXDn", "name": "Les Toitures M Charron", "website": "https://toituresmcharron.ca", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recpX8Bs3ORCuvIXC", "name": "Atelier Jmj", "website": "https://atelier-jmj.ueniweb.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recpafnVcANgJytFL", "name": "Soudure Plastique GL", "website": "https://soudureplastiquegl.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recpqgxfMV34FGvy2", "name": "Demenagement Secur Plus", "website": "https://demenagementsecurplus.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "recqJqswWAm46bv5u", "name": "ALR Électrique", "website": "https://alrelectrique.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recqRcXwlexavEu4A", "name": "Arbreiz Élagage", "website": "https://elagagearbre.ca", "categories": ["Paysagement"], "matched_keywords": ["elagage(STRONG)"], "confidence": "Élevée"}, {"id": "recqTNOjCN2c3lLkF", "name": "ADJ Soudure Générale", "website": "https://adjsoudure.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recqXlMpmAE18E6sJ", "name": "Jacob Nettoyeur Urbain", "website": "https://www.jacobnettoyeur.ca/", "categories": ["Services manuels/Entretien"], "matched_keywords": ["nettoyeur(weak)"], "confidence": "Moyenne"}, {"id": "recqYQ29JTzb4DDaz", "name": "KENNEDY PNEUS & MÉCANIQUE", "website": "https://s-kpm.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["mecanique(weak)"], "confidence": "Moyenne"}, {"id": "recqc59bUQaO17j51", "name": "Autodéfense, Porte Clé Yoogo", "website": "https://yoogo.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["porte(weak)"], "confidence": "Moyenne"}, {"id": "recqigo1OLqameVVe", "name": "Atelier Make", "website": "https://www.ateliermake.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recr0ZGSenkbwHxDV", "name": "Atelier d'Usinage Maheux", "website": "usinagemaheux.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recrCHKBaE10N86kR", "name": "Extermination Inspex Inc.", "website": "exterminationinspex.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["extermination(STRONG)"], "confidence": "Élevée"}, {"id": "recrJOexiUMtBatKZ", "name": "SIT Construction", "website": "https://sit-construction.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recrR3lZTfaARBdKF", "name": "Plombier Sud-Ouest", "website": "https://plombiersudouest.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "recrYOMSlPaUn83kA", "name": "Structures PL Inc.", "website": "https://structurespl.com", "categories": ["Construction"], "matched_keywords": ["structures(weak)"], "confidence": "Moyenne"}, {"id": "recrYeErN6XQVMVju", "name": "Industries SF inc.", "website": "https://industriessf.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recrYo10akWIOWYT4", "name": "TBA Electrique Inc.", "website": "tbaelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recrdNKNiwSrCBnQ7", "name": "Inspection en bâtiment JML", "website": "inspectionbatimentjml.com", "categories": ["Construction"], "matched_keywords": ["batiment(weak)"], "confidence": "Moyenne"}, {"id": "recrhs1hWLwzLupzu", "name": "Fusion Electrique Inc", "website": "https://fusionelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recrlc5ngt894w3Ia", "name": "Toiture Lavoie", "website": "https://toiturelavoie.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}, {"id": "recrmlVJAKi2RHriX", "name": "Planchers Economiques", "website": "https://plancherseconomiques.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["planchers(STRONG)"], "confidence": "Élevée"}, {"id": "recro7SHp3xe7b5kz", "name": "Plomberie Solutions Express", "website": "plombsolutions.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recrtjpndFR4zHdwZ", "name": "Excavation Marcel Vézina Inc.", "website": "https://excavationvezina.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recryILXp6INgdIeW", "name": "Brillmat Portes et Fenêtres", "website": "https://brillmat.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["fenetres(weak)"], "confidence": "Moyenne"}, {"id": "recs1MEE3oSObHB1l", "name": "Excavation JPM", "website": "https://excavationjpm.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["excavation(STRONG)"], "confidence": "Élevée"}, {"id": "recsCrycpgTd7I5on", "name": "RentAll Construction Inc.", "website": "https://rentallconstruction.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recsG98ckzRI6Lt3K", "name": "L'Absolu Spa", "website": "labsolu.com", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["spa(weak)"], "confidence": "Moyenne"}, {"id": "recsHhz7eOjx9CuEv", "name": "Acier DM", "website": "acierdm.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["acier(weak)"], "confidence": "Moyenne"}, {"id": "recsJungslAXETATi", "name": "Construction Labrie", "website": "constructionlabrie.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recsRUC1nQzDtMmJq", "name": "Toitures Ultima", "website": "https://couvreurtoituresultima.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recsWayFmdqDmbGyu", "name": "Ébénisterie Debonville Inc", "website": "https://ebenisteriedebonville.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["ebenisterie(STRONG)"], "confidence": "Élevée"}, {"id": "recsX7FMduc22bKTz", "name": "Chronox-Lasertech Industries Inc", "website": "chronox-lasertech.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recseUhSYA6cZAj3e", "name": "B.F. Ventilation Inc", "website": "https://bfventilation.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "recshNASth9OmK1q5", "name": "Construction CRD", "website": "constructioncrd.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recssP7dtfmiju3jg", "name": "Centre Du Plancher 640 Inc", "website": "plancher640.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["plancher(STRONG)"], "confidence": "Élevée"}, {"id": "recsuL36NdVHwXxHr", "name": "Plomberie Ghislain Gagné Inc", "website": "https://plomberiegagne.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "rectCdJiIhEbevIDE", "name": "Couvreur Verdun Inc", "website": "https://cverdun.com", "categories": ["Toiture"], "matched_keywords": ["couvreur(STRONG)"], "confidence": "Élevée"}, {"id": "rectE7czRfvLWIaH0", "name": "Visionair Climatisation Inc", "website": "https://visionairclimatisation.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["climatisation(STRONG)"], "confidence": "Élevée"}, {"id": "rectFtBf7qBPBGqmc", "name": "Plomberie 5 Étoiles", "website": "https://plomberie5etoiles.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "rectK7hXgsnHayEz5", "name": "Climatis Climatisation & Chauffage", "website": "https://climatis.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["chauffage(STRONG)"], "confidence": "Élevée"}, {"id": "rectLPl1r0QjMBj0m", "name": "Outabec Construction", "website": "https://outabec.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "rectNO8DNERrFnnKe", "name": "Freeland Conception/Fabrication", "website": "https://freelandco.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["fabrication(weak)"], "confidence": "Moyenne"}, {"id": "rectjyraUMO29nLtb", "name": "Construction Écologique QC", "website": "constructionecologique.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recuP407cWaTU7req", "name": "Les Industries Mann Inc.", "website": "selectmops.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industries(weak)"], "confidence": "Moyenne"}, {"id": "recuRO5HfbsO8Up4B", "name": "FANUM USINAGE", "website": "fanum.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["usinage(STRONG)"], "confidence": "Élevée"}, {"id": "recuUfoGUL1qGMhjF", "name": "Toitures Mecba", "website": "https://mecba.ca", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recuXmMfXAgLlpQ3P", "name": "Eltang maçonnerie inc", "website": "https://eltangmaconnerie.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "reculpR3IA7FTBVjT", "name": "Beton Dunbrick", "website": "https://betondunbrick.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "recuqvl2TR91gDe3U", "name": "Vitrerie Expert St-Georges Inc.", "website": "https://vitreriexp.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["vitrerie(STRONG)"], "confidence": "Élevée"}, {"id": "recurOeNGFyXP9PBD", "name": "Construction Vincent", "website": "constructionvincent.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recureedThA0dBYyZ", "name": "Ambiance Électrique", "website": "https://ambianceelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recv0KPViYUXQThlA", "name": "Magny Électrique", "website": "https://magnyelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recv0XpdpUx5kSExx", "name": "Ramoneur.ca", "website": "https://ramoneur.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["ramoneur(STRONG)"], "confidence": "Élevée"}, {"id": "recv0l7AtNyB6bJzT", "name": "GPR Svc Electrique", "website": "https://gprserviceelectrique.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electrique(weak)"], "confidence": "Moyenne"}, {"id": "recvAKU9Av97qqPsY", "name": "Morin Isolation enr.", "website": "https://isolationmorin.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["isolation(STRONG)"], "confidence": "Élevée"}, {"id": "recvFlAzl4nMzrQyz", "name": "Demenagement Delagrave", "website": "delagrave.ca", "categories": ["Services manuels/Entretien"], "matched_keywords": ["demenagement(STRONG)"], "confidence": "Élevée"}, {"id": "recvKp7pDLma5EuDI", "name": "Habitations Terrasse Saint-Michel", "website": "habitationtsm.wixsite.com/htsm", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["terrasse(STRONG)"], "confidence": "Élevée"}, {"id": "recvOUd1AYI9itFcL", "name": "Garage Michel", "website": "garagemichel.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["garage(weak)"], "confidence": "Moyenne"}, {"id": "recvRPHcldGxVbNn6", "name": "A.M. Démolition", "website": "https://amdemolition.com", "categories": ["Construction"], "matched_keywords": ["demolition(STRONG)"], "confidence": "Élevée"}, {"id": "recvXdUbXroZMuvjz", "name": "Plomberie Prest-O", "website": "https://prest-o.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recvavGlIsKZZzrnz", "name": "Béton Préfontaine Division Hydro-Jection Inc.", "website": "https://betonprefontaine.ca", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "recvfjAYP97JLjVg1", "name": "Nettoyage après Sinistre JMC", "website": "https://nettoyagejmc.com", "categories": ["Services manuels/Entretien"], "matched_keywords": ["nettoyage(weak)"], "confidence": "Moyenne"}, {"id": "recvihyw2y0wdKjKF", "name": "ATELIER SIGNATURE", "website": "ateliersignature.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "recvltYjWW1rTVYVY", "name": "Les Constructions P.R.V. Inc.", "website": "https://constructionsprv.ca", "categories": ["Construction"], "matched_keywords": ["constructions(STRONG)"], "confidence": "Élevée"}, {"id": "recvmz7fC0rPR4C9K", "name": "Plancher Times Flooring Inc.", "website": "https://planchertimes.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["plancher(STRONG)"], "confidence": "Élevée"}, {"id": "recw4zp02r8DgJSv7", "name": "Peinture Résidentielle Qc", "website": "peintureresidentielleqc.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["peinture(STRONG)"], "confidence": "Élevée"}, {"id": "recwFiTvknNCQL7Yj", "name": "Optipro Construction Inc.", "website": "constructionoptipro.ca", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recwGpSPzfiezZNyo", "name": "Plomberie Urgence Montréal (PUM)", "website": "https://plomberieurgencemontreal.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recwhG8Gsyn9PnmU0", "name": "Fenestral - Portes et Fenêtres", "website": "fenestral.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["fenetres(weak)"], "confidence": "Moyenne"}, {"id": "recwoBExLjquq74T0", "name": "Beton Fortin Inc", "website": "betonfortin.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "recwrYRGpb2fAqNMc", "name": "Tour Potier Studio Céramique", "website": "tourpotier.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ceramique(STRONG)"], "confidence": "Élevée"}, {"id": "recwyQ3aTnBuriRRc", "name": "SKLZ Construction", "website": "sklzconstruction.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recwzsqczsHW7QJ24", "name": "Ensemble pour la construction", "website": "https://lecollectifdesbatisseurs.com", "categories": ["Construction"], "matched_keywords": ["construction(STRONG)"], "confidence": "Élevée"}, {"id": "recx0Hl0jCi21J7rm", "name": "Toitures Falardeau", "website": "https://toituresfalardeau.com", "categories": ["Toiture"], "matched_keywords": ["toitures(STRONG)"], "confidence": "Élevée"}, {"id": "recx0gJix8F9cutMD", "name": "Plomberie BPE", "website": "https://plomberiebpe.com", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recx3S31szkZzUKsQ", "name": "Plomberie Barrie Inc", "website": "https://plomberiebarrie.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plomberie(STRONG)"], "confidence": "Élevée"}, {"id": "recx7EEzQcqFXTcNg", "name": "Menuiserie Artisan Quebec", "website": "menuiserieartisan.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["menuiserie(STRONG)"], "confidence": "Élevée"}, {"id": "recx7LMwQCQFtozSs", "name": "J D Spécialiste en bâtiment", "website": "https://jdspecialiste.com", "categories": ["Construction"], "matched_keywords": ["batiment(weak)"], "confidence": "Moyenne"}, {"id": "recxRpLChtpSZTv2o", "name": "CDP Industriel Inc", "website": "cdpindustriel.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industriel(weak)"], "confidence": "Moyenne"}, {"id": "recxTKQD1drewFzMD", "name": "Tour Potier Studio Céramique", "website": "https://tourpotier.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["ceramique(STRONG)"], "confidence": "Élevée"}, {"id": "recxUGgQ5hwRf3OZs", "name": "LC Soudure Inc.", "website": "https://lcsoudure.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["soudure(STRONG)"], "confidence": "Élevée"}, {"id": "recxX3E2vJZTOBdbw", "name": "Plombier Les Rivières", "website": "https://plombierlesrivieres.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["plombier(STRONG)"], "confidence": "Élevée"}, {"id": "recxnRrXhgVRA7dJg", "name": "Berwil Mécanique", "website": "berwil.ca", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["mecanique(weak)"], "confidence": "Moyenne"}, {"id": "recy4Ob2kpL2l3Y9e", "name": "Patio et Terrasse 2000", "website": "https://patioterrasse2000.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["patio(STRONG)"], "confidence": "Élevée"}, {"id": "recyAHZ7yACZjQpFK", "name": "Rénovation Plus Quebec", "website": "renovationplusqc.com", "categories": ["Construction"], "matched_keywords": ["renovation(STRONG)"], "confidence": "Élevée"}, {"id": "recyDahQ5S5NBdhFT", "name": "MI Maintenance Industrielle", "website": "https://mi-maintenance.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["industrielle(weak)"], "confidence": "Moyenne"}, {"id": "recyVnIabfUbKRIAi", "name": "Maçonnerie Globensky", "website": "https://maconnerieglobensky.com", "categories": ["Construction"], "matched_keywords": ["maconnerie(STRONG)"], "confidence": "Élevée"}, {"id": "recz9khReveZ7WpQd", "name": "Armoires Rodrigue & Fils", "website": "https://armoiresrodrigue.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["armoires(weak)"], "confidence": "Moyenne"}, {"id": "reczIwOIy3E8Wuzva", "name": "Atelier Make", "website": "ateliermake.com", "categories": ["Mécanique/Soudure/Fabrication"], "matched_keywords": ["atelier(weak)"], "confidence": "Moyenne"}, {"id": "reczKjAUcPaLqAOmy", "name": "Aéra Ventilation Inc.", "website": "https://aeraventilation.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["ventilation(STRONG)"], "confidence": "Élevée"}, {"id": "reczM9mDXI5wOFamB", "name": "Electroteck Ent Electricien Inc", "website": "https://electroteck.ca", "categories": ["Plomberie/Électricité/CVAC"], "matched_keywords": ["electricien(STRONG)"], "confidence": "Élevée"}, {"id": "reczVvImq4bCnZ49p", "name": "Estello Suites & Spa", "website": "estello.ca", "categories": ["Extérieur/Bâtiment"], "matched_keywords": ["spa(weak)"], "confidence": "Moyenne"}, {"id": "reczkfm6Lhl5XVNUk", "name": "Armoires J C Cordeau", "website": "https://jccordeau.com", "categories": ["Métiers spécialisés"], "matched_keywords": ["armoires(weak)"], "confidence": "Moyenne"}, {"id": "reczxT3o3DFQlt9Np", "name": "Béton Gestion Conseil", "website": "https://betongestionconseil.com", "categories": ["Construction"], "matched_keywords": ["beton(STRONG)"], "confidence": "Élevée"}, {"id": "reczzdMMSEu0pf9oO", "name": "Céramique SD", "website": "https://ceramiquesd.ca", "categories": ["Métiers spécialisés"], "matched_keywords": ["ceramique(STRONG)"], "confidence": "Élevée"}, {"id": "reczzzSRflwr8dUOq", "name": "Toiture Uni-que", "website": "https://toitureunique.com", "categories": ["Toiture"], "matched_keywords": ["toiture(STRONG)"], "confidence": "Élevée"}];
+
+  let activeCat = null;
+  let activeConf = 'all'; // 'all' | 'Élevée' | 'Moyenne'
+  let searchQ = '';
+
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('empty');
+  const resultCount = document.getElementById('resultCount');
+  const activeFilters = document.getElementById('activeFilters');
+  const searchInput = document.getElementById('searchInput');
+  const confFilter = document.getElementById('confFilter');
+  const clearBtn = document.getElementById('clearBtn');
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    return s.replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[c]);
+  }
+
+  function render() {
+    const q = searchQ.toLowerCase().trim();
+    const filtered = LEADS.filter(l => {
+      if (activeCat && !l.categories.includes(activeCat)) return false;
+      if (activeConf !== 'all' && l.confidence !== activeConf) return false;
+      if (q) {
+        const hay = (l.name + ' ' + (l.website||'') + ' ' + l.matched_keywords.join(' ')).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    resultCount.textContent = filtered.length;
+
+    const filterParts = [];
+    if (activeCat) filterParts.push(`catégorie: ${activeCat}`);
+    if (activeConf !== 'all') filterParts.push(`confiance: ${activeConf}`);
+    if (q) filterParts.push(`recherche: "${q}"`);
+    activeFilters.textContent = filterParts.length ? '// ' + filterParts.join(' // ') : '';
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    // Sort: Élevée first, then alpha
+    filtered.sort((a, b) => {
+      if (a.confidence !== b.confidence) return a.confidence === 'Élevée' ? -1 : 1;
+      return a.name.localeCompare(b.name, 'fr');
+    });
+
+    tbody.innerHTML = filtered.map((l, i) => {
+      const websiteCell = l.website
+        ? `<a href="${escapeHtml(l.website)}" target="_blank" rel="noopener" class="website-link">${escapeHtml(l.website.replace(/^https?:\/\//,''))}</a>`
+        : `<span class="no-website">—</span>`;
+      const cats = l.categories.map(c => `<span class="cat-tag">${escapeHtml(c)}</span>`).join('');
+      const kws = l.matched_keywords.map(k => k.replace(/\(STRONG\)/, '').replace(/\(weak\)/, ' (faible)')).join(', ');
+      return `
+        <tr class="fade-in">
+          <td class="row-num">${String(i+1).padStart(3, '0')}</td>
+          <td class="company-name">${escapeHtml(l.name)}</td>
+          <td>${websiteCell}</td>
+          <td>${cats}</td>
+          <td><span class="conf conf-${l.confidence}">${l.confidence}</span></td>
+          <td class="kw-list">${escapeHtml(kws)}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  // Category cards click
+  document.querySelectorAll('.cat-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const cat = card.dataset.cat;
+      if (activeCat === cat) {
+        activeCat = null;
+        card.classList.remove('active');
+      } else {
+        document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        activeCat = cat;
+      }
+      render();
+    });
+  });
+
+  // Search
+  searchInput.addEventListener('input', e => {
+    searchQ = e.target.value;
+    render();
+  });
+
+  // Confidence filter cycle
+  confFilter.addEventListener('click', () => {
+    if (activeConf === 'all') {
+      activeConf = 'Élevée';
+      confFilter.textContent = 'Confiance Élevée seulement';
+    } else if (activeConf === 'Élevée') {
+      activeConf = 'Moyenne';
+      confFilter.textContent = 'Confiance Moyenne seulement';
+    } else {
+      activeConf = 'all';
+      confFilter.textContent = 'Toutes confiances';
+    }
+    render();
+  });
+
+  // Clear
+  clearBtn.addEventListener('click', () => {
+    activeCat = null;
+    activeConf = 'all';
+    searchQ = '';
+    searchInput.value = '';
+    confFilter.textContent = 'Toutes confiances';
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
